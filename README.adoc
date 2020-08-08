@@ -81,6 +81,7 @@ Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here
 * SDK's : Mobile (Swift), Python, Ruby
 * SAML support
 * Yaml remote configuration support
+* More deployment options, Helm Charts, Cloud-vendor specific support
 
 For more details please refer to https://github.com/featurehub-io/featurehub/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap[Roadmap tickets]
 
