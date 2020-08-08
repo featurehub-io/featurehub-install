@@ -72,7 +72,9 @@ repository or download the latest tagged release.
 
 === How to use SDKs and examples 
 
-Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here]
+Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here]. The examples are
+https://github.com/featurehub-io/featurehub-examples[located here] in their own repository if you wish to have a
+starting example to work from.
 
 == Coming soon
 
