@@ -1,0 +1,105 @@
+:icons: font
+
+image::https://docs.featurehub.io/images/fh_primary_navy.png[Feature Hub,500]
+
+FeatureHub is a Cloud Native platform to help software teams manage their features, from feature flags (also known as feature toggles) to A/B experiments and remote or centralised configuration.
+It's an essential ingredient for enabling the feedback loop and feature testing and experimentation in production with real users.
+
+FeatureHub can be used with small startups through to large enterprises with many applications and teams.
+It has an enterprise grade permission model, that is intuitive and easy to use, so you can be up and running quickly.
+
+FeatureHub is a self-hosted platform so you can run it on your own infrastructure.
+
+https://www.featurehub.io[Try FeatureHub demo now]
+
+image::https://docs.featurehub.io//images/FH-flags.gif[FeatureHub console demo,800]
+
+NOTE: We release FeatureHub as Docker images, if you can run Docker, you can run FeatureHub.
+
+== Why FeatureHub?
+
+=== Free
+
+* Unlimited users
+* Unlimited features
+* Unlimited clients requesting features
+* Unlimited Applications and Environments
+* Unlimited scalability
+* Choice of how to run your experiment - feature flag, number, string or remote configuration
+* Integration with analytics so you can see how your experiments perform, with Google Analytics out of the box
+
+=== Supported SDKs
+
+image:https://docs.featurehub.io//images/languages.png[Java Logo,1000]
+
+More detailed documentation on SDK's can be found https://docs.featurehub.io#sdks[here]
+
+=== Easy to use
+
+* Control features from an easy to use console
+* View how your features are setup across each environment from the main console
+* Environments promotion order - to help you see and order features by environment
+* With "smart lock" only enable feature state updates when they are ready
+* Use handy admin functions, like applications, environments and user management
+
+=== Enterprise ready
+
+* Run on your own infrastructure (self-hosted)
+* Access control levels to allow different teams/groups permissions.
+* Multiple portfolios (department) support
+
+=== Best development experience
+
+* Easy to set up, Cloud Native - docker containers available
+* Easy to integrate with test automation - API to control feature states from the tests is available
+* Support for feature flags, numbers, strings and Json structure (remote configuration)
+* Easy to log events with analytics with attached feature state
+* Documentation and tutorials available
+
+== Documentation
+
+Full documentation can be found at https://docs.featurehub.io[docs.featurehub.io]
+
+=== Getting started
+
+If you are just curious to see how FeatureHub works and would like to play with it there is a simple way of doing it,
+please follow instructions https://docs.featurehub.io/#_starting_small[here].
+
+Once you have decided to start using FeatureHub in your team, there are also several installation options
+depending on your use case, please read about these options https://docs.featurehub.io/#_installation[here].
+This repository contains all of the suggested deployment possibilities listed in the documentation. You can clone this
+repository or download the latest tagged release.
+
+=== How to use SDKs and examples 
+
+Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here]
+
+== Coming soon
+
+* Gradual rollout and A/B testing
+* Feature auditing
+* SDK's : Mobile (Swift), Python, Ruby
+* SAML support
+* Yaml remote configuration support
+
+For more details please refer to https://github.com/featurehub-io/featurehub/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap[Roadmap tickets]
+
+== Contributing
+
+FeatureHub is an open source project, and we love to receive contributions from our community!
+There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into FeatureHub itself.
+
+Our main contribution repository is located here.
+
+== Where to get help? 
+
+If you cannot find an answer in our documentation please join our Slack community link:https://join.slack.com/t/anyways-labs/shared_invite/zt-frxdx34x-ODs_XmLh6BCvqiNeBRx0hA[Anyways Labs]
+
+Or email our community supporters at info@featurehub.io
+
+== License
+
+FeatureHub is operating under Apache 2.0 license.
+Please refer to the full license link:LICENSE.txt[here]. 
+
+
