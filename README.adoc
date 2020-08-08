@@ -89,7 +89,7 @@ For more details please refer to https://github.com/featurehub-io/featurehub/iss
 FeatureHub is an open source project, and we love to receive contributions from our community!
 There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into FeatureHub itself.
 
-Our main contribution repository is located here.
+Our main contribution repository is located https://github.com/featurehub-io/featurehub[here].
 
 == Where to get help? 
 
@@ -100,6 +100,6 @@ Or email our community supporters at info@featurehub.io
 == License
 
 FeatureHub is operating under Apache 2.0 license.
-Please refer to the full license link:LICENSE.txt[here]. 
+Please refer to the full license link:https://github.com/featurehub-io/featurehub/blob/master/LICENSE.txt[here].
 
 
