@@ -12,7 +12,7 @@ FeatureHub is a self-hosted platform so you can run it on your own infrastructur
 
 https://demo.featurehub.io[Try FeatureHub demo now]
 
-image::https://docs.featurehub.io//images/FH-flags.gif[FeatureHub console demo,800]
+image::https://docs.featurehub.io//images/fh_features_console.png[FeatureHub console demo,800]
 
 NOTE: We release FeatureHub as Docker images, if you can run Docker, you can run FeatureHub.
 
@@ -32,7 +32,7 @@ Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here
 https://github.com/featurehub-io/featurehub-examples[located here] in their own repository if you wish to have a
 starting example to work from.
 
-== Where to get help? 
+== Where to get help?
 
 If you cannot find an answer in our documentation please join our Slack community link:https://join.slack.com/t/anyways-labs/shared_invite/zt-frxdx34x-ODs_XmLh6BCvqiNeBRx0hA[Anyways Labs]
 
