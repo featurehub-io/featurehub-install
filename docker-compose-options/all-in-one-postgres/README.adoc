@@ -1,0 +1,5 @@
+= Postgres All-In-One
+
+This is an example of  the full stack in a Postgres container for demo purposes. It is not expected you would
+run like this in production, but if Postgres is your flavour of database, this is what you would choose.
+
