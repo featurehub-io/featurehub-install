@@ -1,0 +1,16 @@
+Pulumi Install options for FeatureHub
+
+For the local run we assume you are installing:
+
+We assume you have installed https://kind.sigs.k8s.io/docs/user/quick-start/#installation[KinD] or MiniKube or k3s or
+are running the Docker k8s stack.
+
+[source,bash]
+----
+# create the cluster
+kind create cluster --config=kind-cluster.yaml
+
+npm install
+
+pulumi up
+----

@@ -1,0 +1,3 @@
+name: basic-k8s
+runtime: nodejs
+description: Pulumi style deployment into native k8s cluster for FeatureHub
