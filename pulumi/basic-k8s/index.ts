@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { ServiceDeployment } from './service_deployment';
 import { PersistentVolume } from '@pulumi/kubernetes/core/v1';
 import { PersistentVolumeClaim } from '@pulumi/kubernetesx';
+import { Ingress } from '@pulumi/kubernetes/networking/v1';
 
 const config = new pulumi.Config();
 const isLinux = config.requireBoolean("isLinux");
@@ -134,8 +135,8 @@ function nats2() {
   });
 }
 
-function managementServer() {
-  new ServiceDeployment('mr', {
+function managementServer(): ServiceDeployment {
+  return new ServiceDeployment('mr', {
     image: 'featurehub/mr:1.3.0',
     isMinikube: true,
     ports: [{name: 'web', port: 8085, targetPort: 80}],
@@ -144,8 +145,62 @@ function managementServer() {
   })
 }
 
+function dacha(): ServiceDeployment {
+  return new ServiceDeployment('dacha', {
+    image: 'featurehub/dacha:1.3.0',
+    isMinikube: true,
+    ports: [{name: 'web', port: 8600}],
+    volumes: vols,
+    volumeNames: ['dacha-config', 'common-config']
+  })
+}
+
+function edge(): ServiceDeployment {
+  return new ServiceDeployment('edge', {
+    image: 'featurehub/edge:1.3.0',
+    isMinikube: true,
+    ports: [{name: 'web', port: 8553}],
+    volumes: vols,
+    volumeNames: ['edge-config', 'common-config']
+  })
+}
+
 postgres();
 nats2();
-managementServer();
+const mr = managementServer();
+dacha();
+const edgeServer = edge();
+
+
+function ingress() {
+  new Ingress('featurehub', {
+    spec: {
+      defaultBackend: {
+        service: {
+          name: mr.service.metadata.name,
+          port: {name: 'web'}
+        }
+      },
+      rules: [{
+        http: {
+          paths: [
+            {
+              path: '/features',
+              pathType: "Prefix",
+              backend: {
+                service: {
+                  name: edgeServer.service.metadata.name,
+                  port: {name: 'web'}
+                }
+              }
+            }
+          ]
+        }
+      }]
+    }
+  });
+}
+
+ingress();
 
 //export const name = deployment.metadata.name;
