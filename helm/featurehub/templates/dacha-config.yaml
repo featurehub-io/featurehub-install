@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dacha-config
+data:
+  application.properties: |-
+    cache.name=default
+    cache.pool-size=60
+    server.port=8600

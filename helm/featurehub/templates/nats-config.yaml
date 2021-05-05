@@ -1,0 +1,11 @@
+{{- if .Values.nats.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+data:
+  nats.conf: |-
+    debug = false
+    trace = false
+    http: 8222
+{{- end }}

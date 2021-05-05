@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-config
+data:
+  application.properties: |-
+    server.port=8553
+    maxSlots=60
+    update.pool-size=30
+    listen.pool-size=30
+
+

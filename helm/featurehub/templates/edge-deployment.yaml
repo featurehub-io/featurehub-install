@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "featurehub.edge.name" . }}
+  labels:
+  {{- include "featurehub.edge.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.edge.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+  {{- include "featurehub.edge.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+    {{- include "featurehub.edge.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "featurehub.edge.name" . }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.edge.image.repository }}:{{ .Values.edge.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8553
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/liveness
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/readiness
+              port: http
+          volumeMounts:
+            - mountPath: /etc/app-config
+              name: app-config
+            - mountPath: /etc/common-config
+              name: common-config
+          resources:
+      {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: app-config
+          configMap:
+            name: edge-config
+        - name: common-config
+          configMap:
+            name: common-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+  {{- toYaml . | nindent 8 }}
+  {{- end }}
