@@ -10,6 +10,14 @@ are running the Docker k8s stack.
 # create the cluster
 kind create cluster --config=kind-cluster.yaml
 
+# now install nginx's ingress controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
+
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
+
 npm install
 
 pulumi up

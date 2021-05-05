@@ -13,41 +13,41 @@ const isLinux = config.requireBoolean("isLinux");
 function loadVolumesContent() : FeatureHubVolume[] {
   const vols: FeatureHubVolume[] = [];
 
-  vols.push({
-    name: 'app-config',
-    mountPath: '/etc/app-config',
-    type: FeatureHubVolumeType.ConfigMap,
-    items: [{
-      name: 'application.properties',
-    }]
-  });
-
-  vols.push({
-    name: 'common-config',
-    mountPath: '/etc/common-config',
-    type: FeatureHubVolumeType.ConfigMap,
-    items: [{
-      name: 'log4j2.xml'
-    }]
-  });
-
-  vols.push({
-    name: 'dacha-config',
-    mountPath: '/etc/app-config',
-    type: FeatureHubVolumeType.ConfigMap,
-    items: [{
-      name: 'application.properties'
-    }]
-  });
-
-  vols.push({
-    name: 'edge-config',
-    mountPath: '/etc/app-config',
-    type: FeatureHubVolumeType.ConfigMap,
-    items: [{
-      name: 'application.properties'
-    }]
-  });
+  // vols.push({
+  //   name: 'app-config',
+  //   mountPath: '/etc/app-config',
+  //   type: FeatureHubVolumeType.ConfigMap,
+  //   items: [{
+  //     name: 'application.properties',
+  //   }]
+  // });
+  //
+  // vols.push({
+  //   name: 'common-config',
+  //   mountPath: '/etc/common-config',
+  //   type: FeatureHubVolumeType.ConfigMap,
+  //   items: [{
+  //     name: 'log4j2.xml'
+  //   }]
+  // });
+  //
+  // vols.push({
+  //   name: 'dacha-config',
+  //   mountPath: '/etc/app-config',
+  //   type: FeatureHubVolumeType.ConfigMap,
+  //   items: [{
+  //     name: 'application.properties'
+  //   }]
+  // });
+  //
+  // vols.push({
+  //   name: 'edge-config',
+  //   mountPath: '/etc/app-config',
+  //   type: FeatureHubVolumeType.ConfigMap,
+  //   items: [{
+  //     name: 'application.properties'
+  //   }]
+  // });
 
   vols.push({
     name: 'postgres-init',
@@ -165,42 +165,45 @@ function edge(): ServiceDeployment {
   })
 }
 
-postgres();
-nats2();
-const mr = managementServer();
-dacha();
-const edgeServer = edge();
+function featurehub() {
+  const mr = managementServer();
+  dacha();
+  const edgeServer = edge();
 
 
-function ingress() {
-  new Ingress('featurehub', {
-    spec: {
-      defaultBackend: {
-        service: {
-          name: mr.service.metadata.name,
-          port: {name: 'web'}
-        }
-      },
-      rules: [{
-        http: {
-          paths: [
-            {
-              path: '/features',
-              pathType: "Prefix",
-              backend: {
-                service: {
-                  name: edgeServer.service.metadata.name,
-                  port: {name: 'web'}
+  function ingress() {
+    new Ingress('featurehub', {
+      spec: {
+        defaultBackend: {
+          service: {
+            name: mr.service.metadata.name,
+            port: {name: 'web'}
+          }
+        },
+        rules: [{
+          http: {
+            paths: [
+              {
+                path: '/features',
+                pathType: "Prefix",
+                backend: {
+                  service: {
+                    name: edgeServer.service.metadata.name,
+                    port: {name: 'web'}
+                  }
                 }
               }
-            }
-          ]
-        }
-      }]
-    }
-  });
+            ]
+          }
+        }]
+      }
+    });
+  }
+
+  ingress();
 }
 
-ingress();
+postgres();
+nats2();
 
 //export const name = deployment.metadata.name;
