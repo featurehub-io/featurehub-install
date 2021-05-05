@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: nats
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
       securityContext:
@@ -27,22 +28,22 @@ spec:
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:
             - name: nats
-              containerPort: 422
+              containerPort: 4222
               protocol: TCP
             - name: monitoring
               containerPort: 8222
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 20
+            initialDelaySeconds: 5
+            periodSeconds: 10
             failureThreshold: 2
             timeoutSeconds: 3
             httpGet:
               path: /
               port: monitoring
           readinessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 20
+            initialDelaySeconds: 5
+            periodSeconds: 10
             successThreshold: 2
             failureThreshold: 2
             timeoutSeconds: 3

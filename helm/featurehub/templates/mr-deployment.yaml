@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.managementRepository.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "featurehub.managementRepository.selectorLabels" . | nindent 6 }}

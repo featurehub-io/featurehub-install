@@ -5,9 +5,7 @@ metadata:
   labels:
   {{- include "featurehub.edge.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.edge.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
   {{- include "featurehub.edge.selectorLabels" . | nindent 6 }}

@@ -34,7 +34,7 @@ postgres:
   enabled: true
 
 db:
-  url: jdbc:postgresql://db:5432/featurehub
+  url: jdbc:postgresql://postgres:5432/featurehub
   password: featurehub
   username: featurehub
   connections: 3

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: edge-config
+  name: postgres-config
 data:
   initdb.sql: |-
     CREATE USER featurehub PASSWORD 'featurehub';
@@ -41,6 +41,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: postgres
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
       securityContext:
