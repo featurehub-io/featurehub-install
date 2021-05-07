@@ -61,7 +61,7 @@ spec:
             - mountPath: /etc/common-config
               name: common-config
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.managementRepository.resources | nindent 12 }}
       volumes:
         - name: app-config
           secret:
@@ -69,15 +69,15 @@ spec:
         - name: common-config
           configMap:
             name: common-config
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.managementRepository.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.managementRepository.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.managementRepository.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
