@@ -4,6 +4,5 @@ metadata:
   name: dacha-config
 data:
   application.properties: |-
-    cache.name=default
-    cache.pool-size=60
+    cache.pool-size={{ default 10 .Values.dacha.cacheThreadPoolSize }}
     server.port=8600

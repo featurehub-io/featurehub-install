@@ -5,8 +5,8 @@ metadata:
 data:
   application.properties: |-
     server.port=8553
-    maxSlots=60
-    update.pool-size=30
-    listen.pool-size=30
-    
+    maxSlots={{ default 30 .Values.edge.sseClientConnectTimeout }}
+    update.pool-size={{ default 30 .Values.edge.clientUpdateThreadPoolSize }}
+    listen.pool-size={{ default 30 .Values.edge.natsListenerThreadPoolSize }}
+    server.gracePeriodInSeconds={{ default 10 .Values.edge.shutdownGracePeriodInSeconds }}
 

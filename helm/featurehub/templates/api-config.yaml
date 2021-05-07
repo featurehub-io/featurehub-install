@@ -8,10 +8,8 @@ stringData:
     db.username={{ .Values.db.username }}
     db.password={{ .Values.db.password }}
     db.connections={{ default 3 .Values.db.connections }}
-    cache.name=default
     run.nginx=true
-    maxSlots=60
-    server.gracePeriodInSeconds=1
-    register.url=http://localhost:8085/#/register-url?token=%s
-    portfolio.admin.group.suffix=Administrators
+    server.gracePeriodInSeconds={{ default 10 .Values.managementRepository.shutdownGracePeriodInSeconds }}
+    register.url={{ default "http://localhost/#/register-url?token=%s" .Values.managementRepository.registrationUrl }}
+    portfolio.admin.group.suffix={{ default "Administrators" .Values.managementRepository.portfolioGroupAdminSuffix }}
 

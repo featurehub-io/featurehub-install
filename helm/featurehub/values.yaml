@@ -11,16 +11,25 @@ managementRepository:
   replicaCount: 1
   image:
     repository: featurehub/mr
+  shutdownGracePeriodInSeconds: 10
+  registrationUrl: http://localhost/#/register-url?token=%s
+  portfolioGroupAdminSuffix: "Administrators"
 edge:
   name: "edge"
   replicaCount: 2
   image:
     repository: featurehub/edge
+  shutdownGracePeriodInSeconds: 10
+  # 30 seconds before they get kicked off and have to connect again
+  sseClientConnectTimeout: 30
+  clientUpdateThreadPoolSize: 30
+  natsListenerThreadPoolSize: 30
 dacha:
   name: "dacha"
   replicaCount: 2
   image:
     repository: featurehub/dacha
+  cacheThreadPoolSize: 15
 
 # this is not production usable, NATS has many production level k8s cluster
 # examples you can use out of the box, including helm charts
