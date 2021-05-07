@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "featurehub.dacha.name" . }}
+  labels:
+  {{- include "featurehub.dacha.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.dacha.replicaCount }}
+  selector:
+    matchLabels:
+  {{- include "featurehub.dacha.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+    {{- include "featurehub.dacha.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "featurehub.dacha.name" . }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dacha.image.repository }}:{{ .Values.dacha.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - name: internal
+              containerPort: 8600
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/liveness
+              port: internal
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/readiness
+              port: internal
+          volumeMounts:
+            - mountPath: /etc/app-config
+              name: app-config
+            - mountPath: /etc/common-config
+              name: common-config
+          resources:
+      {{- toYaml .Values.dacha.resources | nindent 12 }}
+      volumes:
+        - name: app-config
+          configMap:
+            name: dacha-config
+        - name: common-config
+          configMap:
+            name: common-config
+      {{- with .Values.dacha.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dacha.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dacha.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+  {{- end }}

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-config
+data:
+  application.properties: |-
+    server.port=8553
+    maxSlots={{ default 30 .Values.edge.sseClientConnectTimeout }}
+    update.pool-size={{ default 30 .Values.edge.clientUpdateThreadPoolSize }}
+    listen.pool-size={{ default 30 .Values.edge.natsListenerThreadPoolSize }}
+    server.gracePeriodInSeconds={{ default 10 .Values.edge.shutdownGracePeriodInSeconds }}
+

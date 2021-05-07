@@ -1,0 +1,52 @@
+= Deploying FeatureHub on Kubernetes
+
+These instructions are designed to get you up and running on a local kubernetes running on KinD. They will be
+fleshed out over time as we have these examples running on Google's GKE/Autopilot, AWS's EKS/Fargate, and Azure's
+AKS.
+
+== Overview
+
+For this we ship with a simple postgres, and instructions on how to get NATs into your cluster from the external
+sources. There are plenty of helm charts for NATs.
+
+== Steps
+
+=== 1. Install KinD
+
+We assume KinD here rather than Docker for Kubernetes or Minikube or k3s. If you are familiar with those, you should
+be find with them and you can skip this step.
+
+If you have don't have it installed, follow these instructions https://kind.sigs.k8s.io/docs/user/quick-start/#installation[KinD]
+
+=== 2. Create the KinD cluster
+
+[source,bash]
+----
+kind create cluster --config=kind-cluster.yaml
+----
+
+=== 3. Install Ingress - allow traffic into the cluster
+
+[source,bash]
+----
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
+
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
+----
+=== 4. Install FeatureHub (with defaults)
+
+[source,bash]
+----
+helm install featurehub featurehub
+----
+
+The FeatureHub services will initially 'crash' because they expect the Postgres and NATs services to already be available. Its
+ok, they will recover fairly quickly and start up.
+
+=== 5. Test
+
+It should be running on port 80, so you can login, create a new system, add features, etc. The Edge service is
+also running on port 80. 

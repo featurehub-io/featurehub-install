@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "featurehub.managementRepository.name" . }}
+  labels:
+    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.managementRepository.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "featurehub.managementRepository.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "featurehub.managementRepository.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "featurehub.managementRepository.name" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.managementRepository.image.repository }}:{{ .Values.managementRepository.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: internal
+              containerPort: 8903
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/liveness
+              port: internal
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/readiness
+              port: internal
+          volumeMounts:
+            - mountPath: /etc/app-config
+              name: app-config
+            - mountPath: /etc/common-config
+              name: common-config
+          resources:
+            {{- toYaml .Values.managementRepository.resources | nindent 12 }}
+      volumes:
+        - name: app-config
+          secret:
+            secretName: app-config
+        - name: common-config
+          configMap:
+            name: common-config
+      {{- with .Values.managementRepository.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.managementRepository.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.managementRepository.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
