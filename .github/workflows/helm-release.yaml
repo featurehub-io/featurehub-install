@@ -25,7 +25,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@master
+        uses: helm/chart-releaser-action@1.2.0
         with:
           charts_dir: helm/featurehub
           
