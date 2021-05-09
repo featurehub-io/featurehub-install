@@ -32,6 +32,10 @@ Please follow documentation http://docs.featurehub.io/index.html#_sdk_usage[here
 https://github.com/featurehub-io/featurehub-examples[located here] in their own repository if you wish to have a
 starting example to work from.
 
+=== Helm
+
+If you are using Kubernetes (k8s) you can get the helm charts from here or we publish them to https://artifacthub.io/packages/search?repo=featurehub[image:https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/featurehub[Artifact HUB]].
+
 == Where to get help?
 
 If you cannot find an answer in our documentation please join our Slack community link:https://join.slack.com/t/anyways-labs/shared_invite/zt-frxdx34x-ODs_XmLh6BCvqiNeBRx0hA[Anyways Labs]
