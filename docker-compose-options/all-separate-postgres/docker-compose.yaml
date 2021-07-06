@@ -9,16 +9,18 @@ services:
   mr-server:
     image: featurehub/mr:latest
     restart: always
+    user: 999:999
     volumes:
       - ./app-config:/etc/app-config
     ports:
-      - 8085:80
+      - 8085:8085
     depends_on:
       - "db"
       - "nats"
   dacha:
     image: featurehub/dacha:latest
     restart: always
+    user: 999:999
     volumes:
       - ./dacha-config:/etc/app-config
       - ./common-config:/etc/common-config
@@ -28,6 +30,7 @@ services:
   edge:
     image: featurehub/edge:latest
     restart: always
+    user: 999:999
     volumes:
       - ./edge-config:/etc/app-config
       - ./common-config:/etc/common-config
