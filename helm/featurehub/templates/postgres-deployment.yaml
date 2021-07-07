@@ -44,12 +44,8 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
-      securityContext:
-      {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: postgres
-          securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
           image: "postgres:12-alpine"
           imagePullPolicy: {{ .Values.pullPolicy }}
           env:

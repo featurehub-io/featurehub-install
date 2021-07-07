@@ -18,12 +18,8 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
-      securityContext:
-      {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: nats
-          securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
           image: "nats:2.1.7-alpine"
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:
