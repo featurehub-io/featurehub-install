@@ -3,6 +3,16 @@ entries:
   featurehub:
   - apiVersion: v2
     appVersion: 1.3.1
+    created: "2021-07-14T22:02:50.199486449Z"
+    description: A helm chart for FeatureHub for Kubernetes
+    digest: b3138bb530e5c8367a00b59a9179a55727462e99937cbc4affaaf5ac814b27a2
+    name: featurehub
+    type: application
+    urls:
+    - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-1.3.4/featurehub-1.3.4.tgz
+    version: 1.3.4
+  - apiVersion: v2
+    appVersion: 1.3.1
     created: "2021-05-09T04:33:20.882201333Z"
     description: A helm chart for FeatureHub for Kubernetes
     digest: cd0954d9293e05c71802eb8d1d179dc649e5ebefaf24e10fcc25234d59e28568
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-0.1.0/featurehub-0.1.0.tgz
     version: 0.1.0
-generated: "2021-05-09T04:33:20.882209233Z"
+generated: "2021-07-14T22:02:50.199498649Z"
