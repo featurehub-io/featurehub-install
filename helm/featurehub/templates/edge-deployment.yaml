@@ -35,6 +35,9 @@ spec:
             - name: http
               containerPort: 8553
               protocol: TCP
+            - name: internal
+              containerPort: 8701
+              protocol: TCP
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 20
@@ -42,7 +45,7 @@ spec:
             timeoutSeconds: 3
             httpGet:
               path: /health/liveness
-              port: http
+              port: internal
           readinessProbe:
             initialDelaySeconds: 10
             periodSeconds: 20
@@ -51,7 +54,7 @@ spec:
             timeoutSeconds: 3
             httpGet:
               path: /health/readiness
-              port: http
+              port: internal
           volumeMounts:
             - mountPath: /etc/app-config
               name: app-config

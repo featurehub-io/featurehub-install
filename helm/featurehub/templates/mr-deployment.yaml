@@ -33,10 +33,10 @@ spec:
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8085
               protocol: TCP
             - name: internal
-              containerPort: 8903
+              containerPort: 8701
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 20

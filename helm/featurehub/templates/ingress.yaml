@@ -23,7 +23,7 @@ spec:
     service:
       name: {{ include "featurehub.managementRepository.name" . }}
       port:
-        number: 80
+        name: http
   rules:
     - http:
         paths:

@@ -9,6 +9,8 @@ stringData:
     db.password={{ .Values.db.password }}
     db.connections={{ default 3 .Values.db.connections }}
     run.nginx=true
+    server.port=8903
+    monitor.port=8701
     server.gracePeriodInSeconds={{ default 10 .Values.managementRepository.shutdownGracePeriodInSeconds }}
     register.url={{ default "http://localhost/#/register-url?token=%s" .Values.managementRepository.registrationUrl }}
     portfolio.admin.group.suffix={{ default "Administrators" .Values.managementRepository.portfolioGroupAdminSuffix }}
