@@ -40,7 +40,11 @@ kubectl wait --namespace ingress-nginx \
 
 [source,bash]
 ----
-helm install featurehub featurehub
+helm upgrade --install featurehub featurehub
+
+(If you receive an error 'Error: Internal error occurred: failed calling webhook ...', try deleting the ingress-nginx-admission
+resource `kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission` and try again)
+
 ----
 
 The FeatureHub services will initially 'crash' because they expect the Postgres and NATs services to already be available. Its
