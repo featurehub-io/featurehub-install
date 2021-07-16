@@ -7,6 +7,7 @@ services:
     user: 999:999
     volumes:
       - featurehub-h2-data:/db
+      - ./app-config:/etc/app-config
     ports:
       - 8085:8085
 volumes:
