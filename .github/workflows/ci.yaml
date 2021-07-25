@@ -23,5 +23,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Run helm-docs
-        run: sh .github/helm-docs.sh
+        run: bash .github/helm-docs.sh
 
