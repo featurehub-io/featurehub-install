@@ -1,5 +1,9 @@
-= Postgres All-In-One
+= Postgres All-In-One _Example_
 
-This is an example of  the full stack in a Postgres container for demo purposes. It is not expected you would
+This is an example of  the full stack in a Postgres container for demo purposes. It is _not_ expected you would
 run like this in production, but if Postgres is your flavour of database, this is what you would choose.
+
+The main reason you would not expose your environment like this is that as load increases on your Edge, it would
+deny service to your Admin tool.
+
 
