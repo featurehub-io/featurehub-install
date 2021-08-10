@@ -1,9 +1,8 @@
-= Postgres All-In-One _Example_
+= Postgres All-In-One - Low Volume Option
 
-This is an example of  the full stack in a Postgres container for demo purposes. It is _not_ expected you would
-run like this in production, but if Postgres is your flavour of database, this is what you would choose.
+This is an example of the https://docs.featurehub.io/installation.html#_option_2_low_volume_deployment[low volume option] talking to a Postgres database. Most Cloud providers allow you to
+deploy single containers and this will let you do that.
 
-The main reason you would not expose your environment like this is that as load increases on your Edge, it would
-deny service to your Admin tool.
-
+Beware that because all Edge traffic routes to the same container as your Admin application, excess Edge
+traffic will cause performance issues with your Admin app.
 
