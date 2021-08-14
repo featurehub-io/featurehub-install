@@ -1,0 +1,8 @@
+= All in One
+
+This is intended to allow you to run the FeatureHub Stack in a simple single container. It uses the on-disk
+H2 database. This option is not recommended for production use and should mainly be used for demo purposes.
+
+The only difference between this and the "low volume" options is the database type.
+
+This refers to https://docs.featurehub.io/installation.html#_option_1_evaluation_deployment[Evaluation Deployment]
