@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+  # use this setup in Cloud Run or Azure Container Instances. It can be used
+  # anywhere but is optimised for those scenarios
+  party-server-ish:
+    image: featurehub/party-server-ish:1.5.0-RC1
+    ports:
+      - 8085:8085
+    depends_on:
+      - db
+    environment:
+      - db.url=jdbc:postgresql://db/featurehub
+      - db.username=featurehub
+      - db.password=featurehub
+      - db.minConnections=3
+      - db.maxConnections=30
+      - auth.disable-login=false
+      - monitor.port=8701
+      - server.port=8085
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - featurehub-ps1-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  featurehub-ps1-db:
+
+    

@@ -7,7 +7,7 @@ services:
     ports:
     - 4222:4222
   mr-server:
-    image: featurehub/mr:latest
+    image: featurehub/mr:1.5.0-RC1
     restart: always
     user: 999:999
     volumes:
@@ -18,22 +18,25 @@ services:
       - "db"
       - "nats"
   dacha:
-    image: featurehub/dacha:latest
+    image: featurehub/dacha:1.5.0-RC1
     restart: always
     user: 999:999
     volumes:
       - ./dacha-config:/etc/app-config
-      - ./common-config:/etc/common-config
+#      - ./common-config:/etc/common-config
     depends_on:
       - "mr-server"
       - "nats"
+    ports:
+      - 8902:8902
   edge:
-    image: featurehub/edge:latest
+    image: featurehub/edge:1.5.0-RC1
     restart: always
     user: 999:999
     volumes:
       - ./edge-config:/etc/app-config
-      - ./common-config:/etc/common-config
+# use the below if you wish to override the logs
+#      - ./common-config:/etc/common-config
     ports:
       - 8553:8553
     depends_on:

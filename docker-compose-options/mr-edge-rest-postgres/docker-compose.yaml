@@ -1,0 +1,74 @@
+version: '3.1'
+
+services:
+  postgresql-master:
+    image: docker.io/bitnami/postgresql:13
+    ports:
+      - '5432'
+    volumes:
+      - 'postgresql_master_data:/bitnami/postgresql'
+      - ./initdb:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_DATABASE=my_database
+      - ALLOW_EMPTY_PASSWORD=yes
+  postgresql-slave:
+    image: docker.io/bitnami/postgresql:13
+    ports:
+      - '5432'
+    depends_on:
+      - postgresql-master
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=postgresql-master
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+  edge-rest-ish:
+    # we prefer the slave replica for read requests here
+    image: featurehub/edge-rest:1.5.0-RC1
+    ports:
+      - 8553:8553
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+    environment:
+      - db.url=jdbc:postgresql://postgresql-master/featurehub
+      - db.username=featurehub
+      - db.password=featurehub
+      - db.minConnections=3
+      - db.maxConnections=30
+      - db-replica.url=jdbc:postgresql://postgresql-slave/featurehub
+      - db-replica.username=featurehub
+      - db-replica.password=featurehub
+      - db-replica.minConnections=3
+      - db-replica.maxConnections=30
+      - auth.disable-login=false
+      - monitor.port=8701
+      - server.port=8553
+  admin-app:
+    image: featurehub/mr:1.5.0-RC1
+    ports:
+      - 8085:8085
+    depends_on:
+      - postgresql-master
+    environment:
+      - db.url=jdbc:postgresql://postgresql-master/featurehub
+      - db.username=featurehub
+      - db.password=featurehub
+      - db.minConnections=3
+      - db.maxConnections=30
+      - auth.disable-login=false
+      - monitor.port=8701
+      - server.port=8085
+
+volumes:
+  postgresql_master_data:
+    driver: local
+    
