@@ -25,6 +25,11 @@ spec:
       port:
         name: http
   rules:
+  {{- if .Values.server.ingress.hosts }}
+    {{- range $host := .Values.server.ingress.hosts }}
+    - host: {{ $host }}
+    {{- end }}
+  {{- end }}
     - http:
         paths:
           - path: /features
