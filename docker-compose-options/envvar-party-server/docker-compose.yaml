@@ -16,10 +16,10 @@ services:
     user: 999:999
     restart: always
     environment:
-      - DB.URL=jdbc:postgresql://db:5432/featurehub
-      - DB.USERNAME=featurehub
-      - DB.PASSWORD=featurehub
-      - JERSEY.CORS.HEADERS=X-Requested-With,Authorization,Content-type,Accept-Version,Content-MD5,CSRF-Token,x-ijt,cache-control,x-featurehub,Baggage
+      - db.url=jdbc:postgresql://db:5432/featurehub
+      - db.username=featurehub
+      - db.password=featurehub
+      - jersey.cors.headers=X-Requested-With,Authorization,Content-type,Accept-Version,Content-MD5,CSRF-Token,x-ijt,cache-control,x-featurehub,Baggage
     ports:
       - 8085:8085
     depends_on:

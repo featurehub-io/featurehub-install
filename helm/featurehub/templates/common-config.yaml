@@ -27,11 +27,14 @@ data:
           <AsyncLogger name="io.ebean.cache.COLL" level="trace"/>
           <AsyncLogger name="io.ebean.cache.NATKEY" level="trace"/>
           -->
-          <AsyncLogger name="cd.connect.jersey.common.SpanWorkaroundFilter" level="warn"/>
+          <AsyncLogger name="io.featurehub.edge.features" level="debug"/>
+        <AsyncLogger name="net.stickycode" level="warn"/>
+        <AsyncLogger name="org.glassfish.jersey.server.wadl" level="error"/>
+        <AsyncLogger name="io.avaje.config"  level="warn"/>
+        <AsyncLogger name="org.hibernate" level="error"/>
 
-          <AsyncLogger name="jersey-logging" level="trace" />
 
-          <AsyncRoot level="info">
+        <AsyncRoot level="info">
             <AppenderRef ref="STDOUT"/>
           </AsyncRoot>
         </Loggers>
