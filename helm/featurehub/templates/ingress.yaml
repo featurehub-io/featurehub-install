@@ -25,8 +25,8 @@ spec:
       port:
         name: http
   rules:
-  {{- if .Values.server.ingress.hosts }}
-    {{- range $host := .Values.server.ingress.hosts }}
+  {{- if .Values.ingress.hosts }}
+    {{- range $host := .Values.ingress.hosts }}
     - host: {{ $host }}
     {{- end }}
   {{- end }}
