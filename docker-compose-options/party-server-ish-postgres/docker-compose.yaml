@@ -4,7 +4,7 @@ services:
   # use this setup in Cloud Run or Azure Container Instances. It can be used
   # anywhere but is optimised for those scenarios
   party-server-ish:
-    image: featurehub/party-server-ish:latest-RC2
+    image: featurehub/party-server-ish:latest
     ports:
       - 8085:8085
     depends_on:
