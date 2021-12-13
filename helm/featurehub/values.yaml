@@ -4,14 +4,14 @@
 # This chart assumes you have a NATS server already running in your cluster
 
 
-version: 1.5.1
+version: 1.5.2
 pullPolicy: IfNotPresent
 managementRepository:
   name: "management_repository"
   replicaCount: 1
   image:
     repository: featurehub/mr
-    tag: 1.5.1
+    tag: 1.5.2
   shutdownGracePeriodInSeconds: 10
   registrationUrl: http://localhost/register-url?token=%s
   portfolioGroupAdminSuffix: "Administrators"
@@ -35,7 +35,7 @@ edge:
   replicaCount: 2
   image:
     repository: featurehub/edge
-    tag: 1.5.1
+    tag: 1.5.2
   shutdownGracePeriodInSeconds: 10
   # 30 seconds before they get kicked off and have to connect again
   sseClientConnectTimeout: 30
@@ -61,7 +61,7 @@ dacha:
   replicaCount: 2
   image:
     repository: featurehub/dacha
-    tag: 1.5.1
+    tag: 1.5.2
   cacheThreadPoolSize: 15
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
