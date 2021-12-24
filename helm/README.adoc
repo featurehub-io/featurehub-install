@@ -14,9 +14,9 @@ sources. There are plenty of helm charts for NATs.
 === 1. Install KinD
 
 We assume KinD here rather than Docker for Kubernetes or Minikube or k3s. If you are familiar with those, you should
-be find with them and you can skip this step.
+be able to use them too and you can skip this step.
 
-If you have don't have it installed, follow these instructions https://kind.sigs.k8s.io/docs/user/quick-start/#installation[KinD]
+If you don't have KinD installed, follow these instructions https://kind.sigs.k8s.io/docs/user/quick-start/#installation[KinD]
 
 === 2. Create the KinD cluster
 
