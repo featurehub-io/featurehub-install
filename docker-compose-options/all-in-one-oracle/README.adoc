@@ -1,0 +1,9 @@
+= Oracle XE All-In-One - Low Volume Option
+
+This is intended to be a testbed for the Oracle database support. Oracle drivers and Oracle database migrations
+were included as of FeatureHub 1.5.4. This container setup is not intended for production use.
+
+please note that as Oracle tags a LONG time to start, the party server will keep failing to start and restart itself
+until Oracle does come up.
+
+- Oracle is a trademark of Oracle, no infringement is intended or implied.

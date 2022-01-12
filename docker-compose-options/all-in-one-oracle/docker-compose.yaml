@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+  db:
+    image: gvenzl/oracle-xe
+    restart: always
+    environment:
+      ORACLE_PASSWORD: mypassword
+      ORACLE_DATABASE: featurehub
+      APP_USER: featurehub
+      APP_USER_PASSWORD: featurehub
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "opt/oracle/healthcheck.sh" ]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+    volumes:
+      - featurehub-oracle-db:/opt/oracle/oradata
+    ports:
+      - 1521:1521
+
+  party-server:
+    image: featurehub/party-server:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./app-config:/etc/app-config
+    ports:
+      - 8085:8085
+    depends_on:
+      - "db"
+
+volumes:
+  featurehub-oracle-db:

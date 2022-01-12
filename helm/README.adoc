@@ -50,6 +50,14 @@ resource `kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admissi
 The FeatureHub services will initially 'crash' because they expect the Postgres and NATs services to already be available. Its
 ok, they will recover fairly quickly and start up.
 
+To update it with config changes, just
+
+[source,bash]
+----
+helm upgrade featurehub featurehub
+----
+
+
 === 5. Test
 
 It should be running on port 80, so you can login, create a new system, add features, etc. The Edge service is
