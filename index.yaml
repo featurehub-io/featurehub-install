@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   featurehub:
   - apiVersion: v2
+    appVersion: 1.5.4
+    created: "2022-01-12T08:06:48.258916154Z"
+    description: FeatureHub Release
+    digest: ef6536598c4024a0e301c2d6bb94ada0bae4aba2642929a2dcd546422641c877
+    name: featurehub
+    type: application
+    urls:
+    - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-1.5.4/featurehub-1.5.4.tgz
+    version: 1.5.4
+  - apiVersion: v2
     appVersion: 1.5.2
     created: "2021-12-13T20:01:28.206364191Z"
     description: FeatureHub Release
@@ -71,4 +81,4 @@ entries:
     urls:
     - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-0.1.0/featurehub-0.1.0.tgz
     version: 0.1.0
-generated: "2021-12-13T20:01:28.206448199Z"
+generated: "2022-01-12T08:06:48.258948154Z"
