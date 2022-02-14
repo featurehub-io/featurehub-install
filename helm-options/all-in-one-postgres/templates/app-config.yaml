@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  application.properties: |-
+    db.url={{ .Values.db.url }}
+    db.username={{ .Values.db.username }}
+    db.connections={{ default 3 .Values.db.connections }}
+    jersey.cors.headers=X-Requested-With,Authorization,Content-type,Accept-Version,Content-MD5,CSRF-Token,x-ijt,cache-control,x-featurehub,Baggage

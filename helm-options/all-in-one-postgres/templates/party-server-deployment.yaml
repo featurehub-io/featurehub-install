@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: featurehub-service
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: party-server
+  name: party-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: party-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: featurehub-service
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: party-server
+    spec:
+      containers:
+        - image: "{{.Values.partyServer.image.repository}}:{{.Values.partyServer.image.tag}}"
+          name: party-server
+          ports:
+            - name: http
+              containerPort: 8085
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/app-config
+              name: app-config
+      restartPolicy: Always
+      volumes:
+        - name: app-config
+          configMap:
+            name: app-config
+status: {}

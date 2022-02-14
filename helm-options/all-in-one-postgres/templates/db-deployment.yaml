@@ -1,0 +1,64 @@
+{{- if .Values.postgres.enabled -}}
+apiVersion: v1
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  initdb.sql: |-
+    CREATE USER featurehub PASSWORD 'featurehub';
+    CREATE DATABASE featurehub;
+    GRANT ALL PRIVILEGES ON DATABASE featurehub TO featurehub;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: featurehub-db-service
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: featurehub-db-service
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_PASSWORD
+              value: mypassword
+          image: postgres:12-alpine
+          name: db
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: postgres-init
+            - mountPath: /var/lib/postgresql/data
+              name: featurehub-ps-db
+      restartPolicy: Always
+      volumes:
+        - name: postgres-init
+          configMap:
+            name: postgres-config
+        - name: featurehub-ps-db
+          persistentVolumeClaim:
+            claimName: featurehub-ps-db
+status: {}
+{{- end }}

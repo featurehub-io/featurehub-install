@@ -1,0 +1,26 @@
+partyServer:
+  image:
+    repository: featurehub/party-server
+    tag: 1.5.6
+  version: 1.5.6 ## Not sure this value is used anywhere in helm charts
+  pullPolicy: IfNotPresent
+
+  ## Choose service type of your choice. If you running docker desktop kubernetes, then choose NodePort to be exposed.
+  ## If the rancher or cloud deployment is your choice, then choose the ClusterIP.
+  service:
+    type: NodePort ## NodePort or ClusterIP
+    port: 8085
+
+### database secrets
+db:
+  url: jdbc:postgresql://postgres:5432/featurehub
+  #### Incase of cloud provider use below
+  #### url: jdbc:postgresql://featurehub-dev.aws.com:5432/featurehub
+  #### then skip the db-deployment files by setting postgres enabled false in values.yaml.
+  password: featurehub
+  username: featurehub
+  connections: 3
+
+# this is not intended for any kind of production use, please don't use it as such
+postgres:
+  enabled: true
