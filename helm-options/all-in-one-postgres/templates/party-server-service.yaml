@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: party-server
   name: party-server
 spec:
-  type: { { .Values.partyServer.service.type } }
+  type: {{ .Values.partyServer.service.type }}
   ports:
     - name: http
       port: 8085
