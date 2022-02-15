@@ -13,7 +13,7 @@ partyServer:
 
 ### database secrets
 db:
-  url: jdbc:postgresql://postgres:5432/featurehub
+  url: jdbc:postgresql://db:5432/featurehub
   #### Incase of cloud provider use below
   #### url: jdbc:postgresql://featurehub-dev.aws.com:5432/featurehub
   #### then skip the db-deployment files by setting postgres enabled false in values.yaml.
