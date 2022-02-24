@@ -4,7 +4,6 @@
 # This chart assumes you have a NATS server already running in your cluster
 
 
-version: 1.5.6
 pullPolicy: IfNotPresent
 managementRepository:
   name: "management_repository"
@@ -139,3 +138,11 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+  # If set, creates a defaultBackend configuration for on the ingress. Note that depending
+  # on your set up, this could make all LB matching URLs but non ingress matching URLs
+  # falling on this defaultBackend.
+  defaultBackend: []
+    #service:
+    #  name: management-repository
+    #  port:
+    #    name: http
