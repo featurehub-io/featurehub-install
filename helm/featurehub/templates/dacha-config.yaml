@@ -1,8 +1,10 @@
+{{- if .Values.dacha.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dacha-config
+  name: {{ include "featurehub.fullname" . }}-dacha-config
 data:
   application.properties: |-
     cache.pool-size={{ default 10 .Values.dacha.cacheThreadPoolSize }}
     server.port=8600
+{{- end }}

@@ -1,26 +1,29 @@
+{{- if .Values.dacha.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "featurehub.dacha.name" . }}
   labels:
-  {{- include "featurehub.dacha.labels" . | nindent 4 }}
+    {{- include "featurehub.dacha.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.dacha.replicaCount }}
   selector:
     matchLabels:
-  {{- include "featurehub.dacha.selectorLabels" . | nindent 6 }}
+      {{- include "featurehub.dacha.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-      {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/common-config: {{ include (print $.Template.BasePath "/common-config.yaml") . | sha256sum }}
+        checksum/dacha-config: {{ include (print $.Template.BasePath "/dacha-config.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value}}
+        {{- end }}
       labels:
     {{- include "featurehub.dacha.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
       securityContext:
@@ -62,10 +65,10 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: dacha-config
+            name: {{ include "featurehub.fullname" . }}-dacha-config
         - name: common-config
           configMap:
-            name: common-config
+            name: {{ include "featurehub.fullname" . }}-common-config
       {{- with .Values.dacha.nodeSelector }}
       nodeSelector:
       {{- toYaml . | nindent 8 }}
@@ -78,3 +81,4 @@ spec:
       tolerations:
       {{- toYaml . | nindent 8 }}
   {{- end }}
+{{- end }}
