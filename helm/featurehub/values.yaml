@@ -138,9 +138,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-  # If set, creates a defaultBackend configuration for on the ingress. Note that depending
+  # -- If set, creates a `defaultBackend` configuration on the ingress. Note that depending
   # on your set up, this could make all LB matching URLs but non ingress matching URLs
-  # falling on this defaultBackend.
+  # falling on this defaultBackend. Disable it by setting `defaultBackend: []`
   defaultBackend:
     service:
       name: management-repository
