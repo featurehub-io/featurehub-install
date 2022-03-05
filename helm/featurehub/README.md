@@ -1,8 +1,15 @@
 # featurehub
 
-![Version: 1.5.7](https://img.shields.io/badge/Version-1.5.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.5.6](https://img.shields.io/badge/AppVersion-1.5.6-informational?style=flat-square)
+![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.5.6](https://img.shields.io/badge/AppVersion-1.5.6-informational?style=flat-square)
 
 FeatureHub Release
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | postgresql | 11.0.5 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 0.13.1 |
 
 ## Values
 
@@ -10,40 +17,41 @@ FeatureHub Release
 |-----|------|---------|-------------|
 | dacha.affinity | object | `{}` |  |
 | dacha.cacheThreadPoolSize | int | `15` |  |
+| dacha.enabled | bool | `true` |  |
 | dacha.image.repository | string | `"featurehub/dacha"` |  |
 | dacha.image.tag | string | `"1.5.6"` |  |
-| dacha.name | string | `"dacha"` |  |
 | dacha.nodeSelector | object | `{}` |  |
 | dacha.replicaCount | int | `2` |  |
 | dacha.resources | object | `{}` |  |
 | dacha.tolerations | list | `[]` |  |
 | db.connections | int | `3` |  |
 | db.password | string | `"featurehub"` |  |
-| db.url | string | `"jdbc:postgresql://postgres:5432/featurehub"` |  |
+| db.url | string | `"jdbc:postgresql://featurehub-postgresql:5432/featurehub"` |  |
 | db.username | string | `"featurehub"` |  |
+| edge.ListenerThreadPoolSize | int | `30` |  |
 | edge.affinity | object | `{}` |  |
 | edge.clientUpdateThreadPoolSize | int | `30` |  |
+| edge.enabled | bool | `true` |  |
 | edge.image.repository | string | `"featurehub/edge"` |  |
 | edge.image.tag | string | `"1.5.6"` |  |
-| edge.name | string | `"edge"` |  |
-| edge.natsListenerThreadPoolSize | int | `30` |  |
 | edge.nodeSelector | object | `{}` |  |
 | edge.replicaCount | int | `2` |  |
 | edge.resources | object | `{}` |  |
 | edge.shutdownGracePeriodInSeconds | int | `10` |  |
 | edge.sseClientConnectTimeout | int | `30` |  |
 | edge.tolerations | list | `[]` |  |
-| fullnameOverride | string | `"featurehub"` |  |
+| fullnameOverride | string | `""` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.defaultBackend | object | `{"service":{"name":"management-repository","port":{"name":"http"}}}` | If set, creates a `defaultBackend` configuration on the ingress. Note that depending on your set up, this could make all LB matching URLs but non ingress matching URLs falling on this defaultBackend. Disable it by setting `defaultBackend: []` |
+| ingress.edgeServiceNameOverride | string | `""` |  |
 | ingress.enabled | bool | `true` |  |
 | ingress.hosts | list | `[]` |  |
 | ingress.tls | list | `[]` |  |
 | managementRepository.affinity | object | `{}` |  |
+| managementRepository.enabled | bool | `true` |  |
 | managementRepository.image.repository | string | `"featurehub/mr"` |  |
 | managementRepository.image.tag | string | `"1.5.6"` |  |
-| managementRepository.name | string | `"management_repository"` |  |
 | managementRepository.nodeSelector | object | `{}` |  |
 | managementRepository.portfolioGroupAdminSuffix | string | `"Administrators"` |  |
 | managementRepository.registrationUrl | string | `"http://localhost/register-url?token=%s"` |  |
@@ -51,11 +59,24 @@ FeatureHub Release
 | managementRepository.resources | object | `{}` |  |
 | managementRepository.shutdownGracePeriodInSeconds | int | `10` |  |
 | managementRepository.tolerations | list | `[]` |  |
+| nameOverride | string | `""` |  |
+| nats.cluster.enabled | bool | `true` |  |
+| nats.cluster.name | string | `"featurehub"` |  |
+| nats.cluster.replicas | int | `3` |  |
 | nats.enabled | bool | `true` |  |
-| nats.serverUrls | string | `"nats://nats:4222"` |  |
+| nats.topologyKeys[0] | string | `"kubernetes.io/hostname"` |  |
+| nats.topologyKeys[1] | string | `"topology.kubernetes.io/zone"` |  |
+| nats.topologyKeys[2] | string | `"topology.kubernetes.io/region"` |  |
+| nats.urls | string | `"nats://featurehub-nats:4222"` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.fsGroup | int | `999` |  |
-| postgres.enabled | bool | `true` |  |
+| postgresql.enabled | bool | `true` |  |
+| postgresql.global.postgresql.auth.postgresPassword | string | `"postgresql"` |  |
+| postgresql.primary.initdb.scripts."featurehub.sql" | string | `"CREATE USER featurehub PASSWORD 'featurehub'; CREATE DATABASE featurehub; GRANT ALL PRIVILEGES ON DATABASE featurehub TO featurehub;"` |  |
+| postgresql.primary.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| postgresql.primary.persistence.enabled | bool | `true` |  |
+| postgresql.primary.persistence.size | string | `"128Mi"` |  |
+| postgresql.primary.persistence.storageClassName | string | `"standard"` |  |
 | pullPolicy | string | `"IfNotPresent"` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `999` |  |
