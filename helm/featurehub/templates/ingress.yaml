@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: featurehub
+  name: {{ include "featurehub.fullname" . }}-ingress
   labels:
   {{- with .Values.ingress.annotations }}
   annotations:
@@ -35,7 +35,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "featurehub.edge.name" . }}
+                name: {{ .Values.ingress.edgeServiceNameOverride | default (include "featurehub.edge.name" .) }}
                 port:
                   name: http
   {{- end }}
