@@ -1,7 +1,6 @@
 # Default values for featurehub.
 # This is a YAML-formatted file.
 
-version: 1.5.6
 pullPolicy: IfNotPresent
 
 managementRepository:
@@ -38,7 +37,8 @@ edge:
   # 30 seconds before they get kicked off and have to connect again
   sseClientConnectTimeout: 30
   clientUpdateThreadPoolSize: 30
-  natsListenerThreadPoolSize: 30
+  
+  ListenerThreadPoolSize: 30
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -161,3 +161,11 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+  # -- If set, creates a `defaultBackend` configuration on the ingress. Note that depending
+  # on your set up, this could make all LB matching URLs but non ingress matching URLs
+  # falling on this defaultBackend. Disable it by setting `defaultBackend: []`
+  defaultBackend:
+    service:
+      name: management-repository
+      port:
+        name: http
