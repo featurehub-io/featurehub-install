@@ -1,7 +1,8 @@
+{{- if .Values.edge.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: edge-config
+  name: {{ include "featurehub.fullname" . }}-edge-config
 data:
   application.properties: |-
     server.port=8553
@@ -11,4 +12,4 @@ data:
     server.gracePeriodInSeconds={{ default 10 .Values.edge.shutdownGracePeriodInSeconds }}
     dacha.url.default=http://dacha
     monitor.port=8701
-
+{{- end }}

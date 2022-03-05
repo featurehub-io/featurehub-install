@@ -1,6 +1,27 @@
 {{/*
 Expand the name of the chart.
 */}}
+{{- define "featurehub.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "featurehub.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -41,13 +62,13 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 
 {{- define "featurehub.managementRepository.name" -}}
-{{- default (.Values.managementRepository.name) "management-repository" }}
+{{- printf "%s-%s" (include "featurehub.fullname" .) "management-repository" }}
 {{- end }}
 {{- define "featurehub.edge.name" -}}
-{{- default (.Values.managementRepository.name) "edge" }}
+{{- printf "%s-%s" (include "featurehub.fullname" .) "edge" }}
 {{- end }}
 {{- define "featurehub.dacha.name" -}}
-{{- default (.Values.managementRepository.name) "dacha" }}
+{{- printf "%s-%s" (include "featurehub.fullname" .) "dacha" }}
 {{- end }}
 
 {{/*
@@ -57,17 +78,15 @@ Selector labels
 app.kubernetes.io/name: {{ include "featurehub.managementRepository.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
 {{- define "featurehub.edge.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "featurehub.edge.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
 {{- define "featurehub.dacha.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "featurehub.dacha.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{- define "featurehub.fullname" -}}
-{{- default (.Chart.Name) .Values.fullnameOverride }}
 {{- end }}
 
 {{/*

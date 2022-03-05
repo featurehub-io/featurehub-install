@@ -4,6 +4,16 @@ description: FeatureHub Release
 
 type: application
 
-version: 1.5.6
+version: 2.0.0
 
 appVersion: "1.5.6"
+
+dependencies:
+  - name: postgresql
+    version: 11.0.5
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: nats
+    version: 0.13.1
+    repository: https://nats-io.github.io/k8s/helm/charts/
+    condition: nats.enabled

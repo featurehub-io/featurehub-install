@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-config
+  name: {{ include "featurehub.fullname" . }}-app-config
 data:
   application.properties: |-
     db.url={{ .Values.db.url }}
