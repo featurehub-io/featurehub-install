@@ -10,6 +10,6 @@ data:
     update.pool-size={{ default 30 .Values.edge.clientUpdateThreadPoolSize }}
     listen.pool-size={{ default 30 .Values.edge.natsListenerThreadPoolSize }}
     server.gracePeriodInSeconds={{ default 10 .Values.edge.shutdownGracePeriodInSeconds }}
-    dacha.url.default=http://dacha
+    dacha.url.default=http://featurehub-dacha
     monitor.port=8701
 {{- end }}
