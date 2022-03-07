@@ -30,7 +30,7 @@ jobs:
       - name: Add Helm repositories
         run: |
           # Install yq tool to parse Chart.yaml to identify Helm dependencies repositories
-          wget https://github.com/mikefarah/yq/releases/download/v4.21.1/yq_darwin_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+          wget https://github.com/mikefarah/yq/releases/download/v4.21.1/yq_linux_386 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
           # Retrieve all helm dependencies repositories and run `helm repo add` for each of them.
           yq '.dependencies.[].repository' helm/featurehub/Chart.yaml | while read helm_repo; do
