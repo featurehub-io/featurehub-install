@@ -33,19 +33,26 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.managementRepository.image.repository }}:{{ .Values.managementRepository.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.pullPolicy }}
-          env:
-            - name: db.password
-              valueFrom:
-                secretKeyRef:
-                  key: db.password
-                  name: {{ include "featurehub.managementRepository.name" . }}-password-secret
+          {{- if or (.Values.managementRepository.environmentVars) (.Values.managementRepository.envFromSecret) }}
+          envFrom:
+            {{- if .Values.managementRepository.environmentVars }}
+            - configMapRef:
+                name: {{ include "featurehub.fullname" . }}-management-repository-env
+            {{- end }}
+            {{- if .Values.managementRepository.envFromSecret }}
+            - secretRef:
+                name: {{ .Values.managementRepository.envFromSecret }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8085
               protocol: TCP
-            - name: internal
+            {{- if .Values.managementRepository.prometheus.enabled }}
+            - name: metrics
               containerPort: 8701
               protocol: TCP
+            {{- end }}
           livenessProbe:
             initialDelaySeconds: 20
             periodSeconds: 20
