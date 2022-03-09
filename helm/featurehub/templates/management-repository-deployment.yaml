@@ -48,11 +48,9 @@ spec:
             - name: http
               containerPort: 8085
               protocol: TCP
-            {{- if .Values.managementRepository.prometheus.enabled }}
             - name: metrics
               containerPort: 8701
               protocol: TCP
-            {{- end }}
           livenessProbe:
             initialDelaySeconds: 20
             periodSeconds: 20
@@ -60,7 +58,7 @@ spec:
             timeoutSeconds: 3
             httpGet:
               path: /health/liveness
-              port: internal
+              port: metrics
           readinessProbe:
             initialDelaySeconds: 20
             periodSeconds: 20
@@ -69,7 +67,7 @@ spec:
             timeoutSeconds: 3
             httpGet:
               path: /health/readiness
-              port: internal
+              port: metrics
           volumeMounts:
             - mountPath: /etc/common-config
               name: common-config
