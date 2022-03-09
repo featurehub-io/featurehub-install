@@ -1,0 +1,24 @@
+{{- if .Values.edge.enabled }}
+{{- if .Values.edge.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "featurehub.edge.name" . }}
+  labels:
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
+    {{- with .Values.edge.prometheus.labels }}
+      {{- toYaml .  | nindent 4}}
+    {{- end }}
+spec:
+  endpoints:
+    - honorLabels: true
+      port: metrics
+      path: /metrics
+  selector:
+    matchLabels:
+      {{- include "featurehub.edge.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
+{{- end }}

@@ -1,7 +1,9 @@
-{{- if .Values.managementRepositoryingress.enabled -}}
-{{- if and .Values.managementRepository.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.managementRepository.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.managementRepository.ingress.annotations "kubernetes.io/ingress.class" .Values.managementRepository.ingress.className}}
+{{- if .Values.dacha.enabled }}
+{{- if .Values.dacha.ingress.enabled -}}
+{{- $fullName := include "featurehub.fullname" . -}}
+{{- if and .Values.dacha.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.dacha.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.dacha.ingress.annotations "kubernetes.io/ingress.class" .Values.dacha.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -13,20 +15,20 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "featurehub.managementRepository.name" . }}
+  name: {{ include "featurehub.dacha.name" . }}
   labels:
-    {{- include "featurehub.labels" . | nindent 4 }}
-  {{- with .Values.managementRepository.ingress.annotations }}
+    {{- include "featurehub.dacha.labels" . | nindent 4 }}
+  {{- with .Values.dacha.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.managementRepository.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.managementRepository.ingress.className }}
+  {{- if and .Values.dacha.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.dacha.ingress.className }}
   {{- end }}
-  {{- if .Values.managementRepository.ingress.tls }}
+  {{- if .Values.dacha.ingress.tls }}
   tls:
-    {{- range .Values.managementRepository.ingress.tls }}
+    {{- range .Values.dacha.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -35,7 +37,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.managementRepository.ingress.hosts }}
+    {{- range .Values.dacha.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -47,13 +49,14 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "featurehub.managementRepository.name" . }}
+                name: {{ include "featurehub.dacha.name" $ }}
                 port:
                   number: 8085
               {{- else }}
-              serviceName: {{ include "featurehub.managementRepository.name" . }}
+              serviceName: {{ include "featurehub.dacha.name" $ }}
               servicePort: 8085
               {{- end }}
           {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}

@@ -14,71 +14,80 @@ spec:
     metadata:
       annotations:
         checksum/common-config: {{ include (print $.Template.BasePath "/common-config.yaml") . | sha256sum }}
-        checksum/dacha-config: {{ include (print $.Template.BasePath "/dacha-config.yaml") . | sha256sum }}
-        {{- range $key, $value := .Values.podAnnotations }}
+        checksum/dacha-config: {{ include (print $.Template.BasePath "/dacha/configmap-env.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.dacha.podAnnotations }}
         {{ $key }}: {{ $value}}
         {{- end }}
       labels:
-    {{- include "featurehub.dacha.selectorLabels" . | nindent 8 }}
+        {{- include "featurehub.dacha.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.dacha.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
+      serviceAccountName: {{ include "featurehub.dacha.serviceAccountName" . }}
       securityContext:
-      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.dacha.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ include "featurehub.dacha.name" . }}
           securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.dacha.securityContext | nindent 12 }}
           image: "{{ .Values.dacha.image.repository }}:{{ .Values.dacha.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          imagePullPolicy: {{ .Values.dacha.pullPolicy }}
+          {{- if or (.Values.dacha.environmentVars) (.Values.dacha.envFromSecret) }}
+          envFrom:
+            {{- if .Values.dacha.environmentVars }}
+            - configMapRef:
+                name: {{ include "featurehub.fullname" . }}-dacha-env
+            {{- end }}
+            {{- if .Values.dacha.envFromSecret }}
+            - secretRef:
+                name: {{ .Values.dacha.envFromSecret }}
+            {{- end }}
+          {{- end }}
           ports:
-            - name: internal
+            - name: http
               containerPort: 8600
               protocol: TCP
+            - name: metrics
+              containerPort: 8701
+              protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 20
             periodSeconds: 20
             failureThreshold: 2
             timeoutSeconds: 3
             httpGet:
               path: /health/liveness
-              port: internal
+              port: metrics
           readinessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 20
             periodSeconds: 20
             successThreshold: 2
             failureThreshold: 2
             timeoutSeconds: 3
             httpGet:
               path: /health/readiness
-              port: internal
+              port: metrics
           volumeMounts:
-            - mountPath: /etc/app-config
-              name: app-config
             - mountPath: /etc/common-config
               name: common-config
           resources:
-      {{- toYaml .Values.dacha.resources | nindent 12 }}
+            {{- toYaml .Values.dacha.resources | nindent 12 }}
       volumes:
-        - name: app-config
-          configMap:
-            name: {{ include "featurehub.fullname" . }}-dacha-config
         - name: common-config
           configMap:
             name: {{ include "featurehub.fullname" . }}-common-config
       {{- with .Values.dacha.nodeSelector }}
       nodeSelector:
-      {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.dacha.affinity }}
       affinity:
-      {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.dacha.tolerations }}
       tolerations:
-      {{- toYaml . | nindent 8 }}
-  {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

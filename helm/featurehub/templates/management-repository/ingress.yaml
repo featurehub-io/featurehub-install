@@ -1,0 +1,62 @@
+{{- if .Values.managementRepository.enabled }}
+{{- if .Values.managementRepository.ingress.enabled -}}
+{{- $fullName := include "featurehub.fullname" . -}}
+{{- if and .Values.managementRepository.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.managementRepository.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.managementRepository.ingress.annotations "kubernetes.io/ingress.class" .Values.managementRepository.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "featurehub.managementRepository.name" . }}
+  labels:
+    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+  {{- with .Values.managementRepository.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.managementRepository.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.managementRepository.ingress.className }}
+  {{- end }}
+  {{- if .Values.managementRepository.ingress.tls }}
+  tls:
+    {{- range .Values.managementRepository.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.managementRepository.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ include "featurehub.managementRepository.name" $ }}
+                port:
+                  number: 8085
+              {{- else }}
+              serviceName: {{ include "featurehub.managementRepository.name" $ }}
+              servicePort: 8085
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

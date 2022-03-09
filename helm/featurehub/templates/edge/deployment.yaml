@@ -1,52 +1,53 @@
+{{- if .Values.edge.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "featurehub.managementRepository.name" . }}
+  name: {{ include "featurehub.edge.name" . }}
   labels:
-    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.managementRepository.replicaCount }}
+  replicas: {{ .Values.edge.replicaCount }}
   selector:
     matchLabels:
-      {{- include "featurehub.managementRepository.selectorLabels" . | nindent 6 }}
+      {{- include "featurehub.edge.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/common-config: {{ include (print $.Template.BasePath "/common-config.yaml") . | sha256sum }}
-        checksum/management-repository-config: {{ include (print $.Template.BasePath "/management-repository-configmap-env.yaml") . | sha256sum }}
+        checksum/edge-config: {{ include (print $.Template.BasePath "/edge/configmap-env.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value}}
         {{- end }}
       labels:
-        {{- include "featurehub.managementRepository.selectorLabels" . | nindent 8 }}
+        {{- include "featurehub.edge.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "featurehub.serviceAccountName" . }}
+      serviceAccountName: {{ include "featurehub.edge.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "featurehub.managementRepository.name" . }}
+        - name: {{ include "featurehub.edge.name" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.managementRepository.image.repository }}:{{ .Values.managementRepository.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.edge.image.repository }}:{{ .Values.edge.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.pullPolicy }}
-          {{- if or (.Values.managementRepository.environmentVars) (.Values.managementRepository.envFromSecret) }}
+          {{- if or (.Values.edge.environmentVars) (.Values.edge.envFromSecret) }}
           envFrom:
-            {{- if .Values.managementRepository.environmentVars }}
+            {{- if .Values.edge.environmentVars }}
             - configMapRef:
-                name: {{ include "featurehub.fullname" . }}-management-repository-env
+                name: {{ include "featurehub.fullname" . }}-edge-env
             {{- end }}
-            {{- if .Values.managementRepository.envFromSecret }}
+            {{- if .Values.edge.envFromSecret }}
             - secretRef:
-                name: {{ .Values.managementRepository.envFromSecret }}
+                name: {{ .Values.edge.envFromSecret }}
             {{- end }}
           {{- end }}
           ports:
             - name: http
-              containerPort: 8085
+              containerPort: 8553
               protocol: TCP
             - name: metrics
               containerPort: 8701
@@ -72,20 +73,21 @@ spec:
             - mountPath: /etc/common-config
               name: common-config
           resources:
-            {{- toYaml .Values.managementRepository.resources | nindent 12 }}
+            {{- toYaml .Values.edge.resources | nindent 12 }}
       volumes:
         - name: common-config
           configMap:
             name: {{ include "featurehub.fullname" . }}-common-config
-      {{- with .Values.managementRepository.nodeSelector }}
+      {{- with .Values.edge.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.managementRepository.affinity }}
+      {{- with .Values.edge.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.managementRepository.tolerations }}
+      {{- with .Values.edge.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.managementRepository.enabled }}
 {{- if .Values.managementRepository.prometheus.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -19,4 +20,5 @@ spec:
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
+{{- end }}
 {{- end }}

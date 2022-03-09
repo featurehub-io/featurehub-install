@@ -99,3 +99,36 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the service account to use (management-repository)
+*/}}
+{{- define "featurehub.managementRepository.serviceAccountName" -}}
+{{- if .Values.managementRepository.serviceAccount.create }}
+{{- default (include "featurehub.managementRepository.name" .) .Values.managementRepository.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.managementRepository.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use (edge)
+*/}}
+{{- define "featurehub.edge.serviceAccountName" -}}
+{{- if .Values.edge.serviceAccount.create }}
+{{- default (include "featurehub.edge.name" .) .Values.edge.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.edge.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use (dacha)
+*/}}
+{{- define "featurehub.dacha.serviceAccountName" -}}
+{{- if .Values.dacha.serviceAccount.create }}
+{{- default (include "featurehub.dacha.name" .) .Values.dacha.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.dacha.serviceAccount.name }}
+{{- end }}
+{{- end }}
