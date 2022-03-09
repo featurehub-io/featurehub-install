@@ -39,7 +39,7 @@ jobs:
           # sed 's:/*$::' --> Trims the trailing forward slash '/' at the end of the repository URL, if any
           # sort | uniq ----> Removes duplicated entries, for those cases where more than 1 dependency comes
           #                   from the same Helm repository
-          yq '.dependencies.[].repository' Chart.yaml | sed 's:/*$::' | sort | uniq | while read helm_repo; do
+          yq '.dependencies.[].repository' helm/featurehub/Chart.yaml | sed 's:/*$::' | sort | uniq | while read helm_repo; do
             # Helm repo name is generated from a random string, as it is not persisted between executions.
             helm repo add $(openssl rand -hex 12) ${helm_repo}
           done
