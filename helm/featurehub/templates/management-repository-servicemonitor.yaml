@@ -1,0 +1,22 @@
+{{- if .Values.managementRepository.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "featurehub.managementRepository.name" . }}
+  labels:
+    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+    {{- with .Values.managementRepository.prometheus.labels }}
+      {{- toYaml .  | nindent 4}}
+    {{- end }}
+spec:
+  endpoints:
+    - honorLabels: true
+      port: metrics
+      path: /metrics
+  selector:
+    matchLabels:
+      {{- include "featurehub.managementRepository.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
