@@ -72,7 +72,7 @@ managementRepository:
     labels: {}
 
   ingress:
-    enabled: true
+    enabled: false
     className: ""
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -167,7 +167,7 @@ edge:
     labels: {}
 
   ingress:
-    enabled: true
+    enabled: false
     className: ""
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -258,7 +258,7 @@ dacha:
     labels: {}
 
   ingress:
-    enabled: true
+    enabled: false
     className: ""
     annotations: {}
       # kubernetes.io/ingress.class: nginx
