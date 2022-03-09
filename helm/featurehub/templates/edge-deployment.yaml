@@ -14,7 +14,7 @@ spec:
     metadata:
       annotations:
         checksum/common-config: {{ include (print $.Template.BasePath "/common-config.yaml") . | sha256sum }}
-        checksum/api-config: {{ include (print $.Template.BasePath "/api-config.yaml") . | sha256sum }}
+        checksum/management-repostory-config: {{ include (print $.Template.BasePath "/management-repository-configmap-env.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value}}
         {{- end }}
