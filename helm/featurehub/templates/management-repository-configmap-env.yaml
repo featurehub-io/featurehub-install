@@ -8,6 +8,5 @@ data:
 {{- with .Values.managementRepository.environmentVars }}
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if .Values.managementRepository.prometheus.enabled }}
   monitor.port: "8701"
-{{- end }}
+  server.port: "8085"
