@@ -56,11 +56,23 @@ managementRepository:
     register.url: http://localhost/register-url?token=%s
     portfolio.admin.group.suffix: Administrators
 
+  # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
+  # `environmentVars` to /etc/app-config/application.properties
+  # `envFromSecret` to /etc/app-config/secrets.properties
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsApplicationProperties: true
+
+  # -- Extra environment variables to be exposed to management-repository deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
+
   # -- Name of the secret containing secret properties, to be exposed as environment variables to
-  # management-repository deployment. Create the secret in advance, then reference it here.
+  # edge deployment. Create the secret in advance, then reference it here.
   # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case
   # Entries of the secret specified here are the same as would be specified in /etc/app-config/secrets.properties
-  # E.g `db.password: suP€rSeCr€tP4$s`
   envFromSecret: ""
  
   # -- Prometheus configuration 
@@ -110,6 +122,9 @@ managementRepository:
 
   # -- List of extra mounts to add to Management Repository Deployment
   extraVolumeMounts: []
+    # In case you want to mount /etc/app-config/secrets.properties as a file. First create the secret with
+    # the content of the property file inside a key named `secrets.properties`, then mount add the corresponding
+    # entry to extraVolumes and extraVolueMounts
     #- mountPath: /tmp/foobar
     #  name: foobar
 
@@ -167,6 +182,19 @@ edge:
     listen.pool-size: "30"
     server.gracePeriodInSeconds: "10"
     dacha.url.default: http://featurehub-dacha
+
+  # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
+  # `environmentVars` to /etc/app-config/application.properties
+  # `envFromSecret` to /etc/app-config/secrets.properties
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsAppConfigFile: true
+
+  # -- Extra environment variables to be exposed to edge deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
 
   # -- Name of the secret containing secret properties, to be exposed as environment variables to
   # edge deployment. Create the secret in advance, then reference it here.
@@ -275,6 +303,19 @@ dacha:
   # it easier to implement the deployment, service and the prometheus serviceMonitor manifests.
   environmentVars:
     cache.pool-size: 10
+
+  # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
+  # `environmentVars` to /etc/app-config/application.properties
+  # `envFromSecret` to /etc/app-config/secrets.properties
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsAppConfigFile: true
+
+  # -- Extra environment variables to be exposed to dacha deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
 
   # -- Name of the secret containing secret properties, to be exposed as environment variables to
   # dacha deployment. Create the secret in advance, then reference it here.
