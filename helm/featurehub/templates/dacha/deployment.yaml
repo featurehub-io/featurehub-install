@@ -72,12 +72,21 @@ spec:
           volumeMounts:
             - mountPath: /etc/common-config
               name: common-config
+          {{- if .Values.dacha.extraVolumeMounts }}
+            {{- toYaml .Values.dacha.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.dacha.resources | nindent 12 }}
+      {{- with .Values.dacha.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: common-config
           configMap:
             name: {{ include "featurehub.fullname" . }}-common-config
+      {{- if .Values.managementRepository.extraVolumeMounts }}
+        {{- toYaml .Values.dacha.extraVolumeMounts | nindent 8 }}
+      {{- end }}
       {{- with .Values.dacha.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

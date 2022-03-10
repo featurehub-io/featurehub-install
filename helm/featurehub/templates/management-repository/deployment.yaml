@@ -72,12 +72,21 @@ spec:
           volumeMounts:
             - mountPath: /etc/common-config
               name: common-config
+          {{- if .Values.managementRepository.extraVolumeMounts }}
+            {{- toYaml .Values.managementRepository.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.managementRepository.resources | nindent 12 }}
+      {{- with .Values.managementRepository.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: common-config
           configMap:
             name: {{ include "featurehub.fullname" . }}-common-config
+      {{- if .Values.managementRepository.extraVolumes }}
+        {{- toYaml .Values.managementRepository.extraVolumes | nindent 8 }}
+      {{- end }}
       {{- with .Values.managementRepository.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

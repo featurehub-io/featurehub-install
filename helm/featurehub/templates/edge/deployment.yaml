@@ -72,12 +72,21 @@ spec:
           volumeMounts:
             - mountPath: /etc/common-config
               name: common-config
+          {{- if .Values.edge.extraVolumeMounts }}
+            {{- toYaml .Values.edge.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.edge.resources | nindent 12 }}
+      {{- with .Values.edge.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: common-config
           configMap:
             name: {{ include "featurehub.fullname" . }}-common-config
+      {{- if .Values.edge.extraVolumes }}
+        {{- toYaml .Values.edge.extraVolumes | nindent 8 }}
+      {{- end }}
       {{- with .Values.edge.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

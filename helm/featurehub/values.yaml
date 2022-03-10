@@ -102,6 +102,22 @@ managementRepository:
       #   - ALL
       # readOnlyRootFilesystem: true
 
+  # -- List of extra containers to add to Management Repository Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # -- List of extra mounts to add to Management Repository Deployment
+  extraVolumeMounts: []
+    #- mountPath: /tmp/foobar
+    #  name: foobar
+
+  # -- List of extra volumes to add to Management Repository Deployment
+  extraVolumes: []
+    #- name: foobar
+    #  emptyDir: {}
+
 edge:
   enabled: true
 
@@ -195,7 +211,24 @@ edge:
       # capabilities:
       #   drop:
       #   - ALL
-      # readOnlyRootFilesystem: true
+      # readOnlyRootFilesystem: trueent Repository Deployment
+
+  # -- List of extra containers to add to Edge Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # -- List of extra mounts to add to Edge Deployment
+  extraVolumeMounts: []
+    #- mountPath: /tmp/foobar
+    #  name: foobar
+
+  # -- List of extra volumes to add to Edge Deployment
+  extraVolumes: []
+    #- name: foobar
+    #  emptyDir: {}
+
 
 dacha:
   enabled: true
@@ -287,6 +320,22 @@ dacha:
       #   drop:
       #   - ALL
       # readOnlyRootFilesystem: true
+
+  # -- List of extra containers to add to Dacha Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # -- List of extra mounts to add to Dacha Deployment
+  extraVolumeMounts: []
+    #- mountPath: /tmp/foobar
+    #  name: foobar
+
+  # -- List of extra volumes to add to Dacha Deployment
+  extraVolumes: []
+    #- name: foobar
+    #  emptyDir: {}
 
 # ------------------------------------------------------------------------------- #
 # NATS Helm Chart from Bitnami
