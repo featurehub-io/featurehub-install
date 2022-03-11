@@ -1,0 +1,15 @@
+{{- if .Values.dacha.enabled }}
+{{- if and .Values.dacha.envAsApplicationProperties .Values.dacha.environmentVars }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "featurehub.fullname" . }}-dacha-app-config
+  labels:
+    {{- include "featurehub.dacha.labels" . | nindent 4 }}
+data:
+  application.properties: |-
+{{- range $key, $value := .Values.dacha.environmentVars }}
+  {{- $key | nindent 4 }}={{ $value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

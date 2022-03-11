@@ -1,0 +1,15 @@
+{{- if .Values.edge.enabled }}
+{{- if and .Values.edge.envAsApplicationProperties .Values.edge.environmentVars }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "featurehub.fullname" . }}-edge-app-config
+  labels:
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
+data:
+  application.properties: |-
+{{- range $key, $value := .Values.edge.environmentVars }}
+  {{- $key | nindent 4 }}={{ $value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

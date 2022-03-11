@@ -1,0 +1,13 @@
+{{- if and .Values.global.envAsApplicationProperties .Values.global.environmentVars }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "featurehub.fullname" . }}-global-common-config
+  labels:
+    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+data:
+  common.properties: |-
+{{- range $key, $value := .Values.global.environmentVars }}
+  {{- $key | nindent 4 }}={{ $value }}
+{{- end -}}
+{{- end -}}
