@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - release-2.1.0
+      - release-*
     paths:
       - 'helm/featurehub/**'
 
