@@ -1,14 +1,10 @@
 apiVersion: v2
 name: featurehub
 description: FeatureHub Release
-
 type: application
-
-
-version: 2.0.1
-
+version: 3.0.0
+icon: https://feature-hub.io/img/png/favicon.png
 appVersion: "1.5.6"
-
 dependencies:
   - name: postgresql
     version: 11.0.5
@@ -18,3 +14,4 @@ dependencies:
     version: 0.13.1
     repository: https://nats-io.github.io/k8s/helm/charts/
     condition: nats.enabled
+

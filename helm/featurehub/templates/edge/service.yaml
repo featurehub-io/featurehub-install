@@ -1,0 +1,23 @@
+{{- if .Values.edge.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "featurehub.edge.name" . }}
+  labels:
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8553
+      targetPort: http
+      protocol: TCP
+      name: http
+  {{- if .Values.edge.prometheus.enabled }}
+    - port: 8701
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  {{- end }}  
+  selector:
+    {{- include "featurehub.edge.selectorLabels" . | nindent 4 }}
+{{- end }}

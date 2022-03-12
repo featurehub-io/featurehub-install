@@ -1,0 +1,12 @@
+{{- if .Values.global.environmentVars }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "featurehub.fullname" . }}-global-common-env
+  labels:
+    {{- include "featurehub.managementRepository.labels" . | nindent 4 }}
+data:
+{{- with .Values.global.environmentVars }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

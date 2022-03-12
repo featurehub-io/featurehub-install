@@ -1,0 +1,14 @@
+{{- if .Values.dacha.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "featurehub.fullname" . }}-dacha-env
+  labels:
+    {{- include "featurehub.dacha.labels" . | nindent 4 }}
+data:
+{{- with .Values.dacha.environmentVars }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+  monitor.port: "8701"
+  server.port: "8600"
+{{- end }}

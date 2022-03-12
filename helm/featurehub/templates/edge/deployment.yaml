@@ -1,0 +1,175 @@
+{{- if .Values.edge.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "featurehub.edge.name" . }}
+  labels:
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.edge.replicaCount }}
+  {{- with .Values.edge.strategy }}
+  strategy:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "featurehub.edge.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/edge-env: {{ include (print $.Template.BasePath "/edge/configmap-env.yaml") . | sha256sum }}
+
+        {{- if and .Values.edge.envAsApplicationProperties .Values.edge.environmentVars }}
+        checksum/edge-app-config: {{ include (print $.Template.BasePath "/edge/configmap-app-config.yaml") . | sha256sum }}
+        {{- end }}
+
+        {{- if .Values.global.environmentVars }}
+        checksum/global-common-env: {{ include (print $.Template.BasePath "/common/configmap-global-common-env.yaml") . | sha256sum }}
+        {{- end }}
+
+        {{- if and .Values.global.envAsApplicationProperties .Values.global.environmentVars }}
+        checksum/global-common-config: {{ include (print $.Template.BasePath "/common/configmap-global-common-config.yaml") . | sha256sum }}
+        {{- end }}
+
+        {{- if gt ( len .Values.global.extraCommonConfigFiles ) 0 }}
+        checksum/global-common-config-extra: {{ include (print $.Template.BasePath "/common/configmap-global-common-config-extra.yaml") . | sha256sum }}
+        {{- end }}
+
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value}}
+        {{- end }}
+      labels:
+        {{- include "featurehub.edge.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "featurehub.edge.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "featurehub.edge.name" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.edge.image.repository }}:{{ .Values.edge.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          {{- if or (.Values.global.environmentVars) (.Values.edge.environmentVars) (.Values.edge.envFromSecret) }}
+          envFrom:
+            {{- if .Values.global.environmentVars }}
+            - configMapRef:
+                name: {{ include "featurehub.fullname" . }}-global-common-env
+            {{- end }}
+            {{- if .Values.edge.environmentVars }}
+            - configMapRef:
+                name: {{ include "featurehub.fullname" . }}-edge-env
+            {{- end }}
+            {{- if .Values.edge.envFromSecret }}
+            - secretRef:
+                name: {{ .Values.edge.envFromSecret }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8553
+              protocol: TCP
+            - name: metrics
+              containerPort: 8701
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/liveness
+              port: metrics
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 3
+            httpGet:
+              path: /health/readiness
+              port: metrics
+          volumeMounts:
+          {{- if gt ( len .Values.global.extraCommonConfigFiles ) 0 -}}
+          {{- range $cm := .Values.global.extraCommonConfigFiles }}
+            - name: {{ $cm.configMapSuffix }} 
+              mountPath: "/etc/common-config/{{ $cm.fileName }}"
+              subPath: {{ $cm.fileName | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if and .Values.global.envAsApplicationProperties .Values.global.environmentVars }}
+            - mountPath: /etc/common-config/common.properties
+              name: common-config
+              subPath: common.properties
+          {{- else }}
+            - mountPath: /etc/common-config
+              name: common-config-empty
+          {{- end }}
+          {{- if and .Values.edge.envAsApplicationProperties .Values.edge.environmentVars }}
+            - mountPath: /etc/app-config/application.properties
+              name: app-config
+              subPath: application.properties
+          {{- else }}
+            - mountPath: /etc/app-config
+              name: app-config-empty
+          {{- end }}
+          {{- if .Values.edge.extraVolumeMounts }}
+            {{- toYaml .Values.edge.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.edge.resources | nindent 12 }}
+      {{- with .Values.edge.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if gt ( len .Values.global.extraCommonConfigFiles ) 0 -}}
+      {{- range $cm := .Values.global.extraCommonConfigFiles }}
+      {{- with $ }}
+        - name: {{ $cm.configMapSuffix }}
+          configMap:
+            name: {{ include "featurehub.fullname" . }}-global-extra-{{ $cm.configMapSuffix }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if and .Values.global.envAsApplicationProperties .Values.global.environmentVars }}
+        - name: common-config
+          configMap:
+            name: {{ include "featurehub.fullname" . }}-global-common-config
+            items:
+              - key: common.properties
+                path: common.properties
+      {{- else }}
+        - name: common-config-empty
+          emptyDir: {}
+      {{- end }}
+      {{- if and .Values.edge.envAsApplicationProperties .Values.edge.environmentVars }}
+        - name: app-config
+          configMap:
+            name: {{ include "featurehub.fullname" . }}-edge-app-config
+            items:
+              - key: application.properties
+                path: application.properties
+      {{- else }}
+        - name: app-config-empty
+          emptyDir: {}
+      {{- end }}
+      {{- if .Values.edge.extraVolumes }}
+        {{- toYaml .Values.edge.extraVolumes | nindent 8 }}
+      {{- end }}
+      {{- with .Values.edge.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.edge.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.edge.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

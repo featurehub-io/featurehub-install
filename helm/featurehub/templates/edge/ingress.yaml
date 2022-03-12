@@ -1,0 +1,62 @@
+{{- if .Values.edge.enabled }}
+{{- if .Values.edge.ingress.enabled -}}
+{{- $fullName := include "featurehub.fullname" . -}}
+{{- if and .Values.edge.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.edge.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.edge.ingress.annotations "kubernetes.io/ingress.class" .Values.edge.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "featurehub.edge.name" . }}
+  labels:
+    {{- include "featurehub.edge.labels" . | nindent 4 }}
+  {{- with .Values.edge.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.edge.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.edge.ingress.className }}
+  {{- end }}
+  {{- if .Values.edge.ingress.tls }}
+  tls:
+    {{- range .Values.edge.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.edge.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ include "featurehub.edge.name" $ }}
+                port:
+                  number: 8553
+              {{- else }}
+              serviceName: {{ include "featurehub.edge.name" $ }}
+              servicePort: 8553
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.managementRepository.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,5 +12,12 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+  {{- if .Values.managementRepository.prometheus.enabled }}
+    - port: 8701
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  {{- end }}  
   selector:
     {{- include "featurehub.managementRepository.selectorLabels" . | nindent 4 }}
+{{- end }}

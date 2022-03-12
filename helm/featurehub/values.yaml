@@ -1,17 +1,97 @@
 # Default values for featurehub.
 # This is a YAML-formatted file.
 
-pullPolicy: IfNotPresent
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  # -- Environment variables to be exposed to Management Repository, Edge and Dacha deployments.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case.
+  # Entries accepted here are the same as would be specified in /etc/app-config/common.properties.
+  environmentVars:
+    #nats.urls: ""
+    
+  # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/common.properties file
+  # To mount secret settings as /etc/app-config/common.properties see volume fields
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsApplicationProperties: true
+
+  # -- Extra environment variables to be exposed to Management Repository, Edge and Dacha deployments.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # common.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
+    
+  # -- List of extra mounts to add to Management Repository Deployment
+  extraVolumeMounts: []
+    #- mountPath: /etc/app-config/secrets.properties
+    #  name: secrets-properties
+    #  subPath: secrets.properties
+
+  # -- List of extra volumes to add to Management Repository Deployment
+  extraVolumes: []
+    #- name: secrets-properties
+    #  secret:
+    #    secretName: featurehub-management-repository-secrets-properties
+    #    items:
+    #      - key: secrets.properties
+    #        path: secrets.properties
+
+  extraCommonConfigFiles:
+    - configMapSuffix: log4j2-xml
+      fileName: log4j2.xml
+      content: |-
+        <Configuration packages="cd.connect.logging" monitorInterval="30" verbose="true">
+           <Appenders>
+             <Console name="STDOUT" target="SYSTEM_OUT">
+               <ConnectJsonLayout/>
+             </Console>
+           </Appenders>
+
+           <Loggers>
+             <AsyncLogger name="io.featurehub" level="debug"/>
+             <!--
+             <AsyncLogger name="io.ebean.SQL" level="trace"/>
+             <AsyncLogger name="io.ebean.TXN" level="trace"/>
+             <AsyncLogger name="io.ebean.SUM" level="trace"/>
+             <AsyncLogger name="io.ebean.DDL" level="trace"/>
+             <AsyncLogger name="io.ebean.cache.QUERY" level="trace"/>
+             <AsyncLogger name="io.ebean.cache.BEAN" level="trace"/>
+             <AsyncLogger name="io.ebean.cache.COLL" level="trace"/>
+             <AsyncLogger name="io.ebean.cache.NATKEY" level="trace"/>
+
+             <AsyncLogger name="jersey-logging" level="trace"/>
+             <AsyncLogger name="io.featurehub.db" level="trace"/>
+             -->
+             <AsyncLogger name="io.featurehub.edge.features" level="debug"/>
+
+           <AsyncLogger name="net.stickycode" level="warn"/>
+           <AsyncLogger name="org.glassfish.jersey.server.wadl" level="error"/>
+           <AsyncLogger name="io.avaje.config"  level="warn"/>
+           <AsyncLogger name="org.hibernate" level="error"/>
+
+
+           <AsyncRoot level="info">
+               <AppenderRef ref="STDOUT"/>
+             </AsyncRoot>
+           </Loggers>
+        </Configuration>
 
 managementRepository:
   enabled: true
+
   replicaCount: 1
+
+  strategy: {}
+    #type: RollingUpdate
+
   image:
     repository: featurehub/mr
     tag: 1.5.6
-  shutdownGracePeriodInSeconds: 10
-  registrationUrl: http://localhost/register-url?token=%s
-  portfolioGroupAdminSuffix: "Administrators"
+
+  pullPolicy: IfNotPresent
+
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -21,24 +101,130 @@ managementRepository:
     #   cpu: 100m
     #   memory: 128Mi
     # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
   nodeSelector: {}
+
   tolerations: []
+
   affinity: {}
+
+  # -- Environment variables to be exposed to management-repository deployment.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case.
+  # Entries accepted here are the same as would be specified in /etc/app-config/applications.properties.
+  # Note that `server.port` and `monitor.port` use their default values of `8085` and `8701` respectively, to make
+  # it easier to implement the deployment, service and the prometheus serviceMonitor manifests.
+  environmentVars:
+    db.url: jdbc:postgresql://setmeup-postgresql-endpoint:5432/featurehub
+    db.username: featurehub
+    portfolio.admin.group.suffix: Administrators
+
+  # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/application.properties file
+  # To mount secret settings as /etc/app-config/application.properties see volume fields
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsApplicationProperties: false
+
+  # -- Extra environment variables to be exposed to management-repository deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
+
+  # -- Name of the secret containing secret properties, to be exposed as environment variables to
+  # edge deployment. Create the secret in advance, then reference it here.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case
+  # Entries of the secret specified here are the same as would be specified in /etc/app-config/secrets.properties
+  envFromSecret: ""
+
+  # -- Prometheus configuration
+  prometheus:
+    # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
+    # If enabled, metrics are exposed on port 8701, on /metrics endpoint
+    enabled: false
+    # -- Labels for the Prometheus Operator to handle the serviceMonitor
+    labels: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts: []
+      #  - host: chart-example.local
+      #    paths:
+      #      - path: /
+      #        pathType: ImplementationSpecific
+    tls: []
+      #  - secretName: chart-example-tls
+      #    hosts:
+      #      - chart-example.local
+
+  imagePullSecrets: []
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    fsGroup: 999
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+
+  # -- List of extra containers to add to Management Repository Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # If desired to mount /etc/app-config/secrets.properties as a file. First create the secret with a key
+  # named `secrets.properties` (key name must be that one), then add the corresponding entries to
+  # extraVolumeMounts and extraVolumes
+  #
+  # -- List of extra mounts to add to Management Repository Deployment
+  extraVolumeMounts: []
+    #- mountPath: /etc/app-config/secrets.properties
+    #  name: secrets-properties
+    #  subPath: secrets.properties
+
+  # -- List of extra volumes to add to Management Repository Deployment
+  extraVolumes: []
+    #- name: secrets-properties
+    #  secret:
+    #    secretName: featurehub-management-repository-secrets-properties
+    #    items:
+    #      - key: secrets.properties
+    #        path: secrets.properties
 
 edge:
   enabled: true
+
   replicaCount: 2
+
+  strategy: {}
+    #type: RollingUpdate
+
   image:
     repository: featurehub/edge
     tag: 1.5.6
-  shutdownGracePeriodInSeconds: 10
-  # 30 seconds before they get kicked off and have to connect again
-  sseClientConnectTimeout: 30
-  clientUpdateThreadPoolSize: 30
-  
-  ListenerThreadPoolSize: 30
+
+  pullPolicy: IfNotPresent
+
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -47,20 +233,126 @@ edge:
     # limits:
     #   cpu: 100m
     #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
   nodeSelector: {}
+
   tolerations: []
+
   affinity: {}
+
+  # -- Environment variables to be exposed to edge deployment.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case.
+  # Entries accepted here are the same as would be specified in /etc/app-config/applications.properties.
+  # Note that `server.port` and `monitor.port` use their default values of `8085` and `8701` respectively, to make
+  # it easier to implement the deployment, service and the prometheus serviceMonitor manifests.
+  environmentVars:
+    maxSlots: "30"
+    update.pool-size: "30"
+    listen.pool-size: "30"
+    server.gracePeriodInSeconds: "10"
+    dacha.url.default: http://featurehub-dacha
+
+  # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
+  # `environmentVars` to /etc/app-config/application.properties
+  # `envFromSecret` to /etc/app-config/secrets.properties
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsAppConfigFile: true
+
+  # -- Extra environment variables to be exposed to edge deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
+
+  # -- Name of the secret containing secret properties, to be exposed as environment variables to
+  # edge deployment. Create the secret in advance, then reference it here.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case
+  # Entries of the secret specified here are the same as would be specified in /etc/app-config/secrets.properties
+  envFromSecret: ""
+
+  # -- Prometheus configuration
+  prometheus:
+    # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
+    # If enabled, metrics are exposed on port 8701, on /metrics endpoint
+    enabled: false
+    # -- Labels for the Prometheus Operator to handle the serviceMonitor
+    labels: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts: []
+      #  - host: chart-example.local
+      #    paths:
+      #      - path: /features
+      #        pathType: ImplementationSpecific
+    tls: []
+      #  - secretName: chart-example-tls
+      #    hosts:
+      #      - chart-example.local
+
+  imagePullSecrets: []
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    fsGroup: 999
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+
+  # -- List of extra containers to add to Edge Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # -- List of extra mounts to add to Edge Deployment
+  extraVolumeMounts: []
+    #- mountPath: /tmp/foobar
+    #  name: foobar
+
+  # -- List of extra volumes to add to Edge Deployment
+  extraVolumes: []
+    #- name: foobar
+    #  emptyDir: {}
+
 
 dacha:
   enabled: true
+
   replicaCount: 2
+
+  strategy: {}
+    #type: RollingUpdate
+
   image:
     repository: featurehub/dacha
     tag: 1.5.6
-  cacheThreadPoolSize: 15
+
+  pullPolicy: IfNotPresent
+
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -69,30 +361,130 @@ dacha:
     # limits:
     #   cpu: 100m
     #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
   nodeSelector: {}
+
   tolerations: []
+
   affinity: {}
 
-# This is not intended for any kind of production use, please don't use it as such.
-# For more information on values which can be set see: https://github.com/nats-io/k8s/tree/main/helm/charts/nats
+  # -- Environment variables to be exposed to dacha deployment.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case.
+  # Entries accepted here are the same as would be specified in /etc/app-config/applications.properties.
+  # Note that `server.port` and `monitor.port` use their default values of `8085` and `8701` respectively, to make
+  # it easier to implement the deployment, service and the prometheus serviceMonitor manifests.
+  environmentVars:
+    cache.pool-size: "10"
+
+  # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
+  # `environmentVars` to /etc/app-config/application.properties
+  # `envFromSecret` to /etc/app-config/secrets.properties
+  # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
+  # https://docs.featurehub.io/installation.html#_run_configuration
+  envAsAppConfigFile: true
+
+  # -- Extra environment variables to be exposed to dacha deployment.
+  # In terms of environment variable setting, this is the same as `environmentVars` field. The only difference
+  # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
+  # application.properties configuration file, and not the ones from `extraEnvironmentVars`.
+  extraEnvironmentVars: {}
+
+  # -- Name of the secret containing secret properties, to be exposed as environment variables to
+  # dacha deployment. Create the secret in advance, then reference it here.
+  # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case
+  # Entries of the secret specified here are the same as would be specified in /etc/app-config/secrets.properties
+  envFromSecret: ""
+
+  # -- Prometheus configuration
+  prometheus:
+    # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
+    # If enabled, metrics are exposed on port 8701, on /metrics endpoint
+    enabled: false
+    # -- Labels for the Prometheus Operator to handle the serviceMonitor
+    labels: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts: []
+      #  - host: chart-example.local
+      #    paths:
+      #      - path: /
+      #        pathType: ImplementationSpecific
+    tls: []
+      #  - secretName: chart-example-tls
+      #    hosts:
+      #      - chart-example.local
+
+  imagePullSecrets: []
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    fsGroup: 999
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+
+  # -- List of extra containers to add to Dacha Pod
+  extraContainers: []
+    #- name: do-something
+    #  image: busybox
+    #  command: ['do', 'something']
+
+  # -- List of extra mounts to add to Dacha Deployment
+  extraVolumeMounts: []
+    #- mountPath: /tmp/foobar
+    #  name: foobar
+
+  # -- List of extra volumes to add to Dacha Deployment
+  extraVolumes: []
+    #- name: foobar
+    #  emptyDir: {}
+
+# ------------------------------------------------------------------------------- #
+# NATS Helm Chart from Bitnami
+# Documentation: https://github.com/nats-io/k8s/tree/main/helm/charts/nats
+# ------------------------------------------------------------------------------- #
 nats:
   enabled: true
-  urls: nats://featurehub-nats:4222
   cluster:
     enabled: true
     name: featurehub
     replicas: 3
-  topologyKeys:
-    - "kubernetes.io/hostname"
-    - "topology.kubernetes.io/zone"
-    - "topology.kubernetes.io/region"
+  topologyKeys: []
+    #- "kubernetes.io/hostname"
+    #- "topology.kubernetes.io/zone"
+    #- "topology.kubernetes.io/region"
 
-# this is not intended for any kind of production use, please don't use it as such.
-# For more information on values which can be set see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+# ------------------------------------------------------------------------------- #
+# PostgreSQL Helm Chart from Bitnami:
+# Documentation: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+# ------------------------------------------------------------------------------- #
 postgresql:
+  # Enabled by default just to make it easy to start working with the Chart. This is not
+  # a hard requirement, as you may want to deploy the postgresql in a different way, as
+  # a separate Helm Chart, use an existing one, deploy it to RDS, etc.
   enabled: true
   global:
     postgresql:
@@ -114,58 +506,3 @@ postgresql:
           CREATE DATABASE featurehub;
           GRANT ALL PRIVILEGES ON DATABASE featurehub TO featurehub;
 
-db:
-  url: jdbc:postgresql://featurehub-postgresql:5432/featurehub
-  password: featurehub
-  username: featurehub
-  connections: 3
-
-imagePullSecrets: []
-
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext:
-  fsGroup: 999
-
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 999
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-
-ingress:
-  enabled: true
-  edgeServiceNameOverride: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-      []
-      # - chart-example.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-  # -- If set, creates a `defaultBackend` configuration on the ingress. Note that depending
-  # on your set up, this could make all LB matching URLs but non ingress matching URLs
-  # falling on this defaultBackend. Disable it by setting `defaultBackend: []`
-  defaultBackend:
-    service:
-      name: management-repository
-      port:
-        name: http
