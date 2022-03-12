@@ -127,10 +127,6 @@ managementRepository:
   environmentVars:
     db.url: jdbc:postgresql://setmeup-postgresql-endpoint:5432/featurehub
     db.username: featurehub
-    db.connections: "3"
-    run.nginx: "true"
-    server.gracePeriodInSeconds: "10"
-    register.url: http://localhost/register-url?token=%s
     portfolio.admin.group.suffix: Administrators
 
   # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/application.properties file
