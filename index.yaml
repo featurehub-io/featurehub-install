@@ -3,6 +3,26 @@ entries:
   featurehub:
   - apiVersion: v2
     appVersion: 1.5.6
+    created: "2022-03-12T22:24:39.194588312Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.0.5
+    - condition: nats.enabled
+      name: nats
+      repository: https://nats-io.github.io/k8s/helm/charts/
+      version: 0.13.1
+    description: FeatureHub Release
+    digest: 06132308b496a838a173a158c8386089b8f8ab3e5964e5336c2fd494689e2c1e
+    icon: https://feature-hub.io/img/png/favicon.png
+    name: featurehub
+    type: application
+    urls:
+    - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-3.0.0/featurehub-3.0.0.tgz
+    version: 3.0.0
+  - apiVersion: v2
+    appVersion: 1.5.6
     created: "2022-01-31T08:14:08.089854356Z"
     description: FeatureHub Release
     digest: a732b6e5c06be59234e66d9c2ec772529dc6a277f17f14745a99965fedcde971
@@ -101,4 +121,4 @@ entries:
     urls:
     - https://github.com/featurehub-io/featurehub-install/releases/download/featurehub-0.1.0/featurehub-0.1.0.tgz
     version: 0.1.0
-generated: "2022-01-31T08:14:08.089912957Z"
+generated: "2022-03-12T22:24:39.194769615Z"
