@@ -4,10 +4,11 @@ These instructions are designed to get you up and running on a local kubernetes 
 fleshed out over time as we have these examples running on Google's GKE/Autopilot, AWS's EKS/Fargate, and Azure's
 AKS.
 
-== Overview
+NOTE: This set of Helm charts is designed to be run the local kinD cluster and be fully operable by anyone following
+these instructions. Without modification of the values in the charts, it is not intended to be production ready just
+"go". That said, considerable effort has been put in by contributors to make this as easy to adapt to your needs as possible.
 
-For this we ship with a simple postgres, and instructions on how to get NATs into your cluster from the external
-sources. There are plenty of helm charts for NATs.
+Please feel free to visit our https://docs.featurehub.io[documentation] for further information.
 
 == Steps
 
@@ -36,7 +37,12 @@ kubectl wait --namespace ingress-nginx \
   --selector=app.kubernetes.io/component=controller \
   --timeout=90s
 ----
-=== 4. Install FeatureHub (with defaults)
+
+=== 4. Install Chart dependencies
+
+ $ cd featurehub && helm dependency update && cd ..
+
+=== 5. Install FeatureHub (with defaults)
 
 [source,bash]
 ----
@@ -57,8 +63,25 @@ To update it with config changes, just
 helm upgrade featurehub featurehub
 ----
 
+It should show something like this:
 
-=== 5. Test
+ $  kubectl get pods
+
+----
+NAME                                                READY   STATUS              RESTARTS   AGE
+featurehub-dacha-7d65db8c48-r59l6                   0/1     Pending             0          7s
+featurehub-dacha-7d65db8c48-zqb8s                   0/1     Running             0          8s
+featurehub-edge-86b6b5cf46-4cqvr                    0/1     ContainerCreating   0          7s
+featurehub-edge-86b6b5cf46-n8cm5                    0/1     ContainerCreating   0          8s
+featurehub-management-repository-567b8fbffb-7vcbf   0/1     ContainerCreating   0          8s
+featurehub-nats-0                                   0/3     ContainerCreating   0          8s
+featurehub-nats-1                                   2/3     Running             0          7s
+featurehub-nats-2                                   0/3     Pending             0          7s
+featurehub-nats-box-78587c4478-nkbzt                0/1     ContainerCreating   0          8s
+featurehub-postgresql-0                             0/1     Running             0          8s
+----
+
+=== 6. Test
 
 It should be running on port 80, so you can login, create a new system, add features, etc. The Edge service is
-also running on port 80. 
+also running on port 80.

@@ -9,8 +9,13 @@ global:
   # As of 1.5.0 all FeatureHub controller properties are available as environment variables using the same case.
   # Entries accepted here are the same as would be specified in /etc/app-config/common.properties.
   environmentVars:
-    #nats.urls: ""
-    
+    nats.urls: "nats://featurehub-nats"
+
+  # This is only used for the short-cut KinD ingress, you would not use this in your own cluster
+  ingress:
+    enabled: true
+    annotations: []
+
   # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/common.properties file
   # To mount secret settings as /etc/app-config/common.properties see volume fields
   # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
@@ -22,7 +27,7 @@ global:
   # is that if `envAsAppConfigFile: true`, only entries from `environmentVars` will be mapped to the
   # common.properties configuration file, and not the ones from `extraEnvironmentVars`.
   extraEnvironmentVars: {}
-    
+
   # -- List of extra mounts to add to Management Repository Deployment
   extraVolumeMounts: []
     #- mountPath: /etc/app-config/secrets.properties
@@ -88,7 +93,7 @@ managementRepository:
 
   image:
     repository: featurehub/mr
-    tag: 1.5.6
+    tag: :1.5.6
 
   pullPolicy: IfNotPresent
 
@@ -125,8 +130,11 @@ managementRepository:
   # Note that `server.port` and `monitor.port` use their default values of `8085` and `8701` respectively, to make
   # it easier to implement the deployment, service and the prometheus serviceMonitor manifests.
   environmentVars:
-    db.url: jdbc:postgresql://setmeup-postgresql-endpoint:5432/featurehub
+    db.url: jdbc:postgresql://featurehub-postgresql:5432/featurehub
     db.username: featurehub
+    # normally you would not want this, but its for the postgres
+    db.password: featurehub
+    db.connections: "20"
     portfolio.admin.group.suffix: Administrators
 
   # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/application.properties file
@@ -221,7 +229,7 @@ edge:
 
   image:
     repository: featurehub/edge
-    tag: 1.5.6
+    tag: :1.5.6
 
   pullPolicy: IfNotPresent
 
@@ -262,7 +270,7 @@ edge:
     update.pool-size: "30"
     listen.pool-size: "30"
     server.gracePeriodInSeconds: "10"
-    dacha.url.default: http://featurehub-dacha
+    dacha.url.default: http://featurehub-dacha:8600
 
   # -- If `true`, entries from `environmentVars` and `envFromSecret` fields will be mapped to configuration files.
   # `environmentVars` to /etc/app-config/application.properties
@@ -349,7 +357,7 @@ dacha:
 
   image:
     repository: featurehub/dacha
-    tag: 1.5.6
+    tag: :1.5.6
 
   pullPolicy: IfNotPresent
 
