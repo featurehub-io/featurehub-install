@@ -19,7 +19,7 @@ global:
   # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/common.properties file
   # To mount secret settings as /etc/app-config/common.properties see volume fields
   # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
-  # https://docs.featurehub.io/installation.html#_run_configuration
+  # https://docs.featurehub.io/featurehub/latest/installation.html#_run_configuration
   envAsApplicationProperties: true
 
   # -- Extra environment variables to be exposed to Management Repository, Edge and Dacha deployments.
@@ -140,7 +140,7 @@ managementRepository:
   # -- If `true`, entries from `environmentVars` will be mapped to /etc/app-config/application.properties file
   # To mount secret settings as /etc/app-config/application.properties see volume fields
   # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
-  # https://docs.featurehub.io/installation.html#_run_configuration
+  # https://docs.featurehub.io/featurehub/latest/installation.html#_run_configuration
   envAsApplicationProperties: false
 
   # -- Extra environment variables to be exposed to management-repository deployment.
@@ -276,7 +276,7 @@ edge:
   # `environmentVars` to /etc/app-config/application.properties
   # `envFromSecret` to /etc/app-config/secrets.properties
   # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
-  # https://docs.featurehub.io/installation.html#_run_configuration
+  # https://docs.featurehub.io/featurehub/latest/installation.html#_run_configuration
   envAsAppConfigFile: true
 
   # -- Extra environment variables to be exposed to edge deployment.
@@ -400,7 +400,7 @@ dacha:
   # `environmentVars` to /etc/app-config/application.properties
   # `envFromSecret` to /etc/app-config/secrets.properties
   # Used for retrocompatiblity with FeatureHub controller versions lower than 1.5.0
-  # https://docs.featurehub.io/installation.html#_run_configuration
+  # https://docs.featurehub.io/featurehub/latest/installation.html#_run_configuration
   envAsAppConfigFile: true
 
   # -- Extra environment variables to be exposed to dacha deployment.
