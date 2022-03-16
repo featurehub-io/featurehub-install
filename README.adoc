@@ -1,6 +1,6 @@
 :icons: font
 
-image::https://docs.featurehub.io/featurehub/latest/images/fh_primary_navy.png[Feature Hub,500]
+image::https://docs.featurehub.io/featurehub/latest/_images/fh_primary_navy.png[Feature Hub,500]
 
 
 
