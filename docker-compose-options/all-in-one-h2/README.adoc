@@ -5,4 +5,4 @@ H2 database. This option is not recommended for production use and should mainly
 
 The only difference between this and the "low volume" options is the database type.
 
-This refers to https://docs.featurehub.io/installation.html#_option_1_evaluation_deployment[Evaluation Deployment]
+This refers to https://docs.featurehub.io/featurehub/latest/installation.html#_evaluation_deployment[Evaluation Deployment]

@@ -1,6 +1,6 @@
 = MySQL/MariaDB All-In-One - Low Volume Option
 
-This is an example of the https://docs.featurehub.io/installation.html#_option_2_low_volume_deployment[low volume option] talking to a MySQL/MariaDB database. Most Cloud providers allow you to
+This is an example of the https://docs.featurehub.io/featurehub/latest/installation.html#_option_1a_low_volume_deployment_streaming[low volume option] talking to a MySQL/MariaDB database. Most Cloud providers allow you to
 deploy single containers and this will let you do that.
 
 Beware that because all Edge traffic routes to the same container as your Admin application, excess Edge

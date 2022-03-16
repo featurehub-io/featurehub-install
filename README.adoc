@@ -1,18 +1,18 @@
 :icons: font
 
-image::https://docs.featurehub.io/images/fh_primary_navy.png[Feature Hub,500]
+image::https://docs.featurehub.io/featurehub/latest/images/fh_primary_navy.png[Feature Hub,500]
 
 
 
-This repository contains the following FeatureHub installation assets: 
+This repository contains the following FeatureHub installation assets:
 
 - Docker-compose deployment options
 
-- https://github.com/featurehub-io/featurehub-install/tree/master/helm[Helm Charts] for Kubernetes deployment 
+- https://github.com/featurehub-io/featurehub-install/tree/master/helm[Helm Charts] for Kubernetes deployment
 
 All deployment options are pointing to the "latest" tag of the Docker images that we push to the https://hub.docker.com/u/featurehub[DockerHub]
 
-You can find the "latest" release notes and previous releases https://github.com/featurehub-io/featurehub/releases[here] 
+You can find the "latest" release notes and previous releases https://github.com/featurehub-io/featurehub/releases[here]
 
 
 NOTE: From version FeatureHub v1.3.4 and later the containers are run in "non-root users" mode for security reasons.
@@ -20,10 +20,10 @@ NOTE: From version FeatureHub v1.3.4 and later the containers are run in "non-ro
 == Documentation
 
 If you are just curious to see how FeatureHub works and would like to play with it there is a simple way of doing it,
-please follow instructions https://docs.featurehub.io/#_starting_small[here].
+please follow instructions https://docs.featurehub.io/featurehub/latest/index.html#_evaluating_featurehub[here].
 
 Once you have decided to start using FeatureHub in your team, there are also several installation options
-depending on your use case, please read about these options https://docs.featurehub.io/#_installation[here].
+depending on your use case, please read about these options https://docs.featurehub.io/featurehub/latest/installation.html[here].
 
 
 === Helm
