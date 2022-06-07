@@ -11,4 +11,5 @@ data:
 {{- end }}
   monitor.port: "8701"
   server.port: "8085"
+  run.nginx: "true"
 {{- end }}
