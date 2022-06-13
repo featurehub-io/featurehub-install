@@ -85,3 +85,42 @@ featurehub-postgresql-0                             0/1     Running             
 
 It should be running on port 80, so you can login, create a new system, add features, etc. The Edge service is
 also running on port 80.
+
+
+== Notes about the helm chart
+
+=== The ingress
+
+By default, the helm chart will create a global ingress - as defined by the values - which means
+all traffic routing into your namespace will go through that ingress and be routed as per its rules.
+This means default traffic to MR and /features to Edge - Dacha never receives edge traffic.
+
+All services generally have a separate monitoring and server port, as per the docs - MR is 8701 for
+monitoring, 8085 for the server. It does this to ensure your liveness and prometheus traffic endpoints
+aren't exposed to the world.
+
+If your services aren't coming up - and you have modified these charts, its likely because the
+port configuration is wrong.
+
+You will need to find a pod (unless you have enabled prometheus on the MR, in which case you
+get a service endpoint for it). So e.g.
+
+ $ kubectl get pods
+
+to find a pod and then
+
+The management port is exposed on a service, so:
+
+ $ kubectl port-forward featurehub-management-repository-bf8b79d4d-2pkdl 8701
+
+A curl to it:
+
+----
+curl  localhost:8701
+featurehub is here%
+----
+
+If there is something wrong with the health check of a service, then the logs should be printing
+out exactly what is wrong, and so should the endpoint.
+
+
