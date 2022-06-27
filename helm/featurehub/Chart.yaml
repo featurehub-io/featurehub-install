@@ -2,9 +2,9 @@ apiVersion: v2
 name: featurehub
 description: FeatureHub Release
 type: application
-version: 3.0.3
+version: 3.0.4
 icon: https://feature-hub.io/img/png/favicon.png
-appVersion: "1.5.7"
+appVersion: "1.5.8"
 dependencies:
   - name: postgresql
     version: 11.0.5

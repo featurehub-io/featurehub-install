@@ -1,0 +1,10 @@
+= MySQL/MariaDB All-In-One - Low Volume Option
+
+This is an example of the https://docs.featurehub.io/featurehub/latest/installation.html#_option_1a_low_volume_deployment_streaming[low volume option] talking to a MariaDB database. Most Cloud providers allow you to
+deploy single containers and this will let you do that.
+
+Beware that because all Edge traffic routes to the same container as your Admin application, excess Edge
+traffic will cause performance issues with your Admin app.
+
+Please note that MariaDB is a tier-2 "support" option. We test against Postgres and H2 on a day-to-day basis and
+rely on the user community for failure feedback. The drivers included are MariaDB drivers.

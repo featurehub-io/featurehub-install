@@ -1,6 +1,6 @@
 # featurehub
 
-![Version: 3.0.3](https://img.shields.io/badge/Version-3.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.5.7](https://img.shields.io/badge/AppVersion-1.5.7-informational?style=flat-square)
+![Version: 3.0.3](https://img.shields.io/badge/Version-3.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.5.8](https://img.shields.io/badge/AppVersion-1.5.8-informational?style=flat-square)
 
 FeatureHub Release
 
@@ -25,7 +25,7 @@ FeatureHub Release
 | dacha.extraVolumeMounts | list | `[]` | List of extra mounts to add to Dacha Deployment |
 | dacha.extraVolumes | list | `[]` | List of extra volumes to add to Dacha Deployment |
 | dacha.image.repository | string | `"featurehub/dacha"` |  |
-| dacha.image.tag | string | `"1.5.7"` |  |
+| dacha.image.tag | string | `"1.5.8"` |  |
 | dacha.imagePullSecrets | list | `[]` |  |
 | dacha.ingress.annotations | object | `{}` |  |
 | dacha.ingress.className | string | `""` |  |
@@ -58,7 +58,7 @@ FeatureHub Release
 | edge.extraVolumeMounts | list | `[]` | List of extra mounts to add to Edge Deployment |
 | edge.extraVolumes | list | `[]` | List of extra volumes to add to Edge Deployment |
 | edge.image.repository | string | `"featurehub/edge"` |  |
-| edge.image.tag | string | `"1.5.7"` |  |
+| edge.image.tag | string | `"1.5.8"` |  |
 | edge.imagePullSecrets | list | `[]` |  |
 | edge.ingress.annotations | object | `{}` |  |
 | edge.ingress.className | string | `""` |  |
@@ -102,7 +102,7 @@ FeatureHub Release
 | managementRepository.extraVolumeMounts | list | `[]` | List of extra mounts to add to Management Repository Deployment |
 | managementRepository.extraVolumes | list | `[]` | List of extra volumes to add to Management Repository Deployment |
 | managementRepository.image.repository | string | `"featurehub/mr"` |  |
-| managementRepository.image.tag | string | `"1.5.7"` |  |
+| managementRepository.image.tag | string | `"1.5.8"` |  |
 | managementRepository.imagePullSecrets | list | `[]` |  |
 | managementRepository.ingress.annotations | object | `{}` |  |
 | managementRepository.ingress.className | string | `""` |  |
