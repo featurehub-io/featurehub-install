@@ -6,6 +6,14 @@ version: 3.0.4
 icon: https://feature-hub.io/img/png/favicon.png
 appVersion: "1.5.8"
 dependencies:
+  - name: grafana
+    version: 7.9.8
+    repository: https://charts.bitnami.com/bitnami
+    condition: grafana.enabled
+  - name: kube-prometheus
+    version: 8.0.9
+    repository: https://charts.bitnami.com/bitnami
+    condition: kube-prometheus.enabled
   - name: postgresql
     version: 11.0.5
     repository: https://charts.bitnami.com/bitnami

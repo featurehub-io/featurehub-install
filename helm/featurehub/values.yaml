@@ -159,7 +159,7 @@ managementRepository:
   prometheus:
     # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
     # If enabled, metrics are exposed on port 8701, on /metrics endpoint
-    enabled: false
+    enabled: true
     # -- Labels for the Prometheus Operator to handle the serviceMonitor
     labels: {}
 
@@ -313,7 +313,7 @@ edge:
   prometheus:
     # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
     # If enabled, metrics are exposed on port 8701, on /metrics endpoint
-    enabled: false
+    enabled: true
     # -- Labels for the Prometheus Operator to handle the serviceMonitor
     labels: {}
 
@@ -437,7 +437,7 @@ dacha:
   prometheus:
     # -- Whether to enable or disable prometheus metrics endpoints, and serviceMonitor
     # If enabled, metrics are exposed on port 8701, on /metrics endpoint
-    enabled: false
+    enabled: true
     # -- Labels for the Prometheus Operator to handle the serviceMonitor
     labels: {}
 
@@ -532,3 +532,35 @@ postgresql:
           CREATE DATABASE featurehub;
           GRANT ALL PRIVILEGES ON DATABASE featurehub TO featurehub;
 
+kube-prometheus:
+  enabled: true
+  blackboxExporter:
+    enabled: false
+  rbac:
+    pspEnabled: false
+  kubeProxy:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: false
+  exporters:
+    kube-state-metrics:
+      enabled: false
+    node-exporter:
+      enabled: false
+
+grafana:
+  enabled: true
+  metrics:
+    enabled: true
+  admin:
+    password: featurehub
+  persistence:
+    size: 512Mi
