@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  db:
+    image: mariadb:10.5.16-focal
+    restart: always
+    environment:
+      MYSQL_DATABASE: featurehub
+      MYSQL_USER: featurehub
+      MYSQL_PASSWORD: featurehub
+      MYSQL_ROOT_PASSWORD: mypassword
+    volumes:
+      - featurehub-mysql-db:/var/lib/mysql
+    ports:
+      - 3324:3306
+
+  party-server:
+    image: featurehub/party-server:1.5.8
+    restart: always
+    user: 999:999
+    volumes:
+      - ./app-config:/etc/app-config
+    ports:
+      - 8085:8085
+    depends_on:
+      - "db"
+
+volumes:
+  featurehub-mysql-db:
