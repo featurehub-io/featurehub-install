@@ -5,6 +5,6 @@ if [ $# -eq 0 ]
     exit -1
 fi
 VERSION=$1
-kind --name local-saas-cluster load docker-image featurehub/mr:$VERSION
-kind --name local-saas-cluster load docker-image featurehub/edge:$VERSION
-kind --name local-saas-cluster load docker-image featurehub/dacha:$VERSION
+kind --name featurehub-cluster load docker-image featurehub/mr:$VERSION
+kind --name featurehub-cluster load docker-image featurehub/edge:$VERSION
+kind --name featurehub-cluster load docker-image featurehub/dacha:$VERSION
