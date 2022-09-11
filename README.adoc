@@ -2,7 +2,7 @@
 
 image::https://docs.featurehub.io/featurehub/latest/_images/fh_primary_navy.png[Feature Hub,500]
 
-
+NOTE: Helm Charts since version 3.0.4 have forked to a separate repository https://github.com/featurehub-io/featurehub-helm 
 
 This repository contains the following FeatureHub installation assets:
 
@@ -13,7 +13,6 @@ This repository contains the following FeatureHub installation assets:
 All deployment options are pointing to the "latest" tag of the Docker images that we push to the https://hub.docker.com/u/featurehub[DockerHub]
 
 You can find the "latest" release notes and previous releases https://github.com/featurehub-io/featurehub/releases[here]
-
 
 NOTE: From version FeatureHub v1.3.4 and later the containers are run in "non-root users" mode for security reasons.
 
