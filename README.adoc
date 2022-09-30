@@ -8,7 +8,7 @@ This repository contains the following FeatureHub installation assets:
 
 - Docker-compose deployment options
 
-- https://github.com/featurehub-io/featurehub-install/tree/master/helm[Helm Charts] for Kubernetes deployment
+Please visit https://github.com/featurehub-io/featurehub-helm/tree/master/helm[Helm Charts] for Kubernetes deployment
 
 All deployment options are pointing to the "latest" tag of the Docker images that we push to the https://hub.docker.com/u/featurehub[DockerHub]
 
@@ -24,12 +24,6 @@ please follow instructions https://docs.featurehub.io/featurehub/latest/index.ht
 Once you have decided to start using FeatureHub in your team, there are also several installation options
 depending on your use case, please read about these options https://docs.featurehub.io/featurehub/latest/installation.html[here].
 
-
-=== Helm
-
-We publish helm charts to https://artifacthub.io/packages/search?repo=featurehub[image:https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/featurehub[Artifact HUB]].
-
-https://github.com/featurehub-io/featurehub-install/tree/master/helm[Helm documentation]
 
 == Where to get help?
 
