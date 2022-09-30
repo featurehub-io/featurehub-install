@@ -1,9 +1,0 @@
-dependencies:
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.0.5
-- name: nats
-  repository: https://nats-io.github.io/k8s/helm/charts/
-  version: 0.13.1
-digest: sha256:ba62bc3579a52f4b375a9ccbacef334129259516b2ff34de591347663af5e610
-generated: "2022-02-28T15:29:12.110834078Z"
