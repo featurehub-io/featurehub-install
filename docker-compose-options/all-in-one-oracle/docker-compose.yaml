@@ -20,7 +20,7 @@ services:
       - 1521:1521
 
   party-server:
-    image: featurehub/party-server:latest
+    image: featurehub/party-server:1.5.9-RC
     restart: always
     user: 999:999
     volumes:

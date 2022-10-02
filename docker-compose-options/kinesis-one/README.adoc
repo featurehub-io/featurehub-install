@@ -1,0 +1,13 @@
+= AWS Kinesis and Party Server
+
+AWS Kinesis is as of 1.5.9 still in _beta_ mode, we are looking for testing and feedback from people, and are happy to work with any organisation interested to ensure it gets into a robust state.
+
+This sample creates two Party Server instances running against the Kinesis emulator in LocalStack. This emulator is fairly good, but we have experienced some problems with it and it only supports Polling mode.
+
+All configuration is done by environment variables.
+
+Stack:
+
+- 2 x FeatureHub Party Server instances
+- Kinesis emulator on Localstack, with preconfigured streams
+- Postgres database

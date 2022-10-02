@@ -1,47 +1,58 @@
 version: '3.1'
 
 services:
-  nats:
-    image: nats:2.9.1-alpine
+  localstack:
+    image: localstack/localstack:1.1
     restart: always
+    ports:
+      - 4566:4566
+    environment:
+      SERVICES: kinesis,dynamodb,cloudwatch
+      KINESIS_PROVIDER: kinesis-mock
+      KINESIS_INITIALIZE_STREAMS: featurehub-mr-edge,featurehub-stats,featurehub-mr-dacha2,featurehub-edge-updates
+      LS_LOG: warn
+
   mr-server:
     image: featurehub/mr:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
-      - ./app-config:/etc/app-config
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./mr-config/application.env
     ports:
       - 8085:8085
-      - 8701:8701
     depends_on:
       - "db"
-      - "nats"
+      - "localstack"
   dacha:
     image: featurehub/dacha2:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
-      - ./dacha-config:/etc/app-config
-#      - ./common-config:/etc/common-config
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./dacha-config/application.env
     depends_on:
       - "mr-server"
-      - "nats"
+      - "localstack"
     ports:
       - 8902:8902
-      - 8703:8279
   edge:
     image: featurehub/edge:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
-      - ./edge-config:/etc/app-config
-# use the below if you wish to override the logs
-#      - ./common-config:/etc/common-config
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./edge-config/application.env
     ports:
       - 8553:8553
-      - 8702:8701
     depends_on:
-      - "nats"
+      - "localstack"
   db:
     image: postgres:14-alpine
     restart: always

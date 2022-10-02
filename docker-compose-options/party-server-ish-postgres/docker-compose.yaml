@@ -4,7 +4,7 @@ services:
   # use this setup in Cloud Run or Azure Container Instances. It can be used
   # anywhere but is optimised for those scenarios
   party-server-ish:
-    image: featurehub/party-server-ish:latest
+    image: featurehub/party-server-ish:1.5.9-RC
     ports:
       - 8085:8085
     depends_on:
@@ -19,7 +19,7 @@ services:
       - monitor.port=8701
       - server.port=8085
   db:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: mypassword

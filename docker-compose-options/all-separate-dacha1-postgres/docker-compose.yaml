@@ -5,7 +5,7 @@ services:
     image: nats:2.9.1-alpine
     restart: always
   mr-server:
-    image: featurehub/mr:latest
+    image: featurehub/mr:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
@@ -17,7 +17,7 @@ services:
       - "db"
       - "nats"
   dacha:
-    image: featurehub/dacha2:latest
+    image: featurehub/dacha2:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
@@ -29,7 +29,7 @@ services:
       - 8902:8902
       - 8703:8279
   edge:
-    image: featurehub/edge:latest
+    image: featurehub/edge:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
@@ -42,7 +42,7 @@ services:
     depends_on:
       - "nats"
   db:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: mypassword
