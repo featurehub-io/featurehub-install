@@ -1,0 +1,14 @@
+= Google PubSub and a High Scale deployment
+
+Google PubSub is considered production ready, this is a deployment of all components
+separately.
+
+This sample deploys Edge, Management Repository and Dacha2 running against the Google PubSub emulator. The stack will create the necessary topics and subscriptions on start, in "real mode" it would expect topics and one subscription to be created. It needs to create a new subscription for each Dacha2 and Edge instance because Google PubSub is not... PubSub.
+
+All configuration is done by environment variables.
+
+Stack:
+
+- Edge, Dacha2, Management Repository Instances
+- Google PubSub
+- Postgres database

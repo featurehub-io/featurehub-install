@@ -1,0 +1,70 @@
+version: '3.1'
+
+services:
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:398.0.0-emulators
+    restart: always
+    command:
+      - gcloud
+      - beta
+      - emulators
+      - pubsub
+      - start
+      - --project=featureuhb
+      - --host-port=0.0.0:8075
+    ports:
+      - 8075:8075
+
+  mr-server:
+    image: featurehub/mr:1.5.9-RC
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./mr-config/application.env
+    ports:
+      - 8085:8085
+    depends_on:
+      - "db"
+      - "pubsub"
+  dacha:
+    image: featurehub/dacha2:1.5.9-RC
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./dacha-config/application.env
+    depends_on:
+      - "mr-server"
+      - "pubsub"
+    ports:
+      - 8902:8902
+  edge:
+    image: featurehub/edge:1.5.9-RC
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./edge-config/application.env
+    ports:
+      - 8553:8553
+    depends_on:
+      - "pubsub"
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - featurehub-ps1-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  featurehub-ps1-db:
