@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   db:
-    image: mariadb:10.5.9-focal
+    image: mysql:8.0.30
     restart: always
     environment:
       MYSQL_DATABASE: featurehub

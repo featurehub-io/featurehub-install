@@ -15,7 +15,7 @@ services:
       - 3324:3306
 
   party-server:
-    image: featurehub/party-server:1.5.8
+    image: featurehub/party-server:1.5.9-RC
     restart: always
     user: 999:999
     volumes:
