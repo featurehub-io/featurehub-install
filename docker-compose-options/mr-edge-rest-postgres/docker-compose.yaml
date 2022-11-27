@@ -32,7 +32,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
   edge-rest-ish:
     # we prefer the slave replica for read requests here
-    image: featurehub/edge-rest:1.5.9-RC
+    image: featurehub/edge-rest:latest
     ports:
       - 8553:8553
     depends_on:
@@ -53,7 +53,7 @@ services:
       - monitor.port=8701
       - server.port=8553
   admin-app:
-    image: featurehub/mr:1.5.9-RC
+    image: featurehub/mr:latest
     ports:
       - 8085:8085
     depends_on:

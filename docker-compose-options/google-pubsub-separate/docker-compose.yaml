@@ -16,7 +16,7 @@ services:
       - 8075:8075
 
   mr-server:
-    image: featurehub/mr:1.5.9-RC
+    image: featurehub/mr:latest
     restart: always
     user: 999:999
     volumes:
@@ -30,7 +30,7 @@ services:
       - "db"
       - "pubsub"
   dacha:
-    image: featurehub/dacha2:1.5.9-RC
+    image: featurehub/dacha2:latest
     restart: always
     user: 999:999
     volumes:
@@ -44,7 +44,7 @@ services:
     ports:
       - 8902:8902
   edge:
-    image: featurehub/edge:1.5.9-RC
+    image: featurehub/edge:latest
     restart: always
     user: 999:999
     volumes:

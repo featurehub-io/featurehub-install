@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   party-server:
-    image: featurehub/party-server:1.5.9-RC
+    image: featurehub/party-server:latest
     restart: always
     user: 999:999
     volumes:
