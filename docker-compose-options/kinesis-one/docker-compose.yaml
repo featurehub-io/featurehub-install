@@ -1,0 +1,59 @@
+version: '3.1'
+
+services:
+  localstack:
+    image: localstack/localstack:1.1
+    restart: always
+    ports:
+      - 4566:4566
+    environment:
+      SERVICES: kinesis,dynamodb,cloudwatch
+      KINESIS_PROVIDER: kinesis-mock
+      KINESIS_INITIALIZE_STREAMS: featurehub-mr-edge,featurehub-stats,featurehub-mr-dacha2,featurehub-edge-updates
+      LS_LOG: warn
+
+  mr-server:
+    image: featurehub/party-server:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    environment:
+      server.port: 8085
+    env_file:
+      - ./common.env
+    ports:
+      - 8085:8085
+    depends_on:
+      - "db"
+      - "localstack"
+
+  # a second copy of the party server
+  mr-server2:
+    image: featurehub/party-server:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    environment:
+      server.port: 8086
+    env_file:
+      - ./common.env
+    ports:
+      - 8086:8086
+    depends_on:
+      - "db"
+      - "localstack"
+
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - featurehub-ps1-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  featurehub-ps1-db:

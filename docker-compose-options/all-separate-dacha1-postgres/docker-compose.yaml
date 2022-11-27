@@ -17,12 +17,11 @@ services:
       - "db"
       - "nats"
   dacha:
-    image: featurehub/dacha2:latest
+    image: featurehub/dacha:latest
     restart: always
     user: 999:999
     volumes:
       - ./dacha-config:/etc/app-config
-#      - ./common-config:/etc/common-config
     depends_on:
       - "mr-server"
       - "nats"

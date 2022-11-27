@@ -1,0 +1,13 @@
+= AWS Kinesis and a High Scale deployment
+
+AWS Kinesis is as of 1.5.9 still in _beta_ mode, we are looking for testing and feedback from people, and are happy to work with any organisation interested to ensure it gets into a robust state.
+
+This sample deploys Edge, Management Repository and Dacha2 running against the Kinesis emulator in LocalStack. This emulator is fairly good, but we have experienced some problems with it and it only supports Polling mode.
+
+All configuration is done by environment variables.
+
+Stack:
+
+- Edge, Dacha2, Management Repository Instances
+- Kinesis emulator on Localstack, with preconfigured streams
+- Postgres database

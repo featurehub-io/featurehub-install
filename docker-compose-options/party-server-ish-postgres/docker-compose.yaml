@@ -19,7 +19,7 @@ services:
       - monitor.port=8701
       - server.port=8085
   db:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: mypassword
