@@ -25,6 +25,7 @@ services:
       - ./common.env
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - "db"
       - "pubsub"

@@ -9,6 +9,7 @@ services:
       - ./app-config:/etc/app-config
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - "db"
   db:
