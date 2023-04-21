@@ -12,8 +12,6 @@ services:
       - start
       - --project=featureuhb
       - --host-port=0.0.0:8075
-    ports:
-      - 8075:8075
 
   mr-server:
     image: featurehub/party-server:latest

@@ -8,6 +8,7 @@ services:
     volumes:
       - featurehub-h2-data:/db
       - ./app-config:/etc/app-config
+      - ./common-config:/etc/common-config
     ports:
       - 8085:8085
 volumes:
