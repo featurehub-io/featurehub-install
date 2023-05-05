@@ -28,7 +28,7 @@ services:
       - "nats"
     ports:
       - 8902:8902
-      - 8703:8279
+      - 8279:8279
   edge:
     image: featurehub/edge:latest
     restart: always
@@ -39,7 +39,7 @@ services:
 #      - ./common-config:/etc/common-config
     ports:
       - 8553:8553
-      - 8702:8701
+      - 8554:8554
     depends_on:
       - "nats"
   db:

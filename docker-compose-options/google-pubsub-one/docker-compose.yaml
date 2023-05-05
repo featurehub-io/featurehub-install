@@ -12,21 +12,19 @@ services:
       - start
       - --project=featureuhb
       - --host-port=0.0.0:8075
-    ports:
-      - 8075:8075
 
-  mr-server:
+  party-server:
     image: featurehub/party-server:latest
     restart: always
     user: 999:999
-    volumes:
-      - ./common-config:/etc/common-config
     environment:
       server.port: 8085
+      monitor.port: 8701
     env_file:
       - ./common.env
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - "db"
       - "pubsub"

@@ -12,8 +12,6 @@ services:
       - start
       - --project=featureuhb
       - --host-port=0.0.0:8075
-    ports:
-      - 8075:8075
 
   mr-server:
     image: featurehub/mr:latest
@@ -26,6 +24,7 @@ services:
       - ./mr-config/application.env
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - "db"
       - "pubsub"
@@ -43,6 +42,8 @@ services:
       - "pubsub"
     ports:
       - 8902:8902
+      - 8279:8279
+
   edge:
     image: featurehub/edge:latest
     restart: always
@@ -54,6 +55,7 @@ services:
       - ./edge-config/application.env
     ports:
       - 8553:8553
+      - 8554:8554
     depends_on:
       - "pubsub"
   db:

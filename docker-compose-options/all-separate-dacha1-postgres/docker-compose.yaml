@@ -4,6 +4,7 @@ services:
   nats:
     image: nats:2.9.1-alpine
     restart: always
+
   mr-server:
     image: featurehub/mr:latest
     restart: always
@@ -16,6 +17,7 @@ services:
     depends_on:
       - "db"
       - "nats"
+
   dacha:
     image: featurehub/dacha:latest
     restart: always
@@ -27,7 +29,8 @@ services:
       - "nats"
     ports:
       - 8902:8902
-      - 8703:8279
+      - 8279:8279
+
   edge:
     image: featurehub/edge:latest
     restart: always
@@ -38,9 +41,10 @@ services:
 #      - ./common-config:/etc/common-config
     ports:
       - 8553:8553
-      - 8702:8701
+      - 8554:8554
     depends_on:
       - "nats"
+
   db:
     image: postgres:14-alpine
     restart: always
@@ -51,5 +55,6 @@ services:
       - featurehub-ps1-db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
 volumes:
   featurehub-ps1-db:

@@ -20,8 +20,10 @@ services:
     user: 999:999
     volumes:
       - ./app-config:/etc/app-config
+      - ./common-config:/etc/common-config
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - "db"
 

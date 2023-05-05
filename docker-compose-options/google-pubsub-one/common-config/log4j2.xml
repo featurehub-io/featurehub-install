@@ -7,8 +7,8 @@
 
   <Loggers>
     <AsyncLogger name="io.featurehub" level="debug"/>
-	  <AsyncLogger name="io.featurehub.events.pubsub" level="trace"/>
-	  <AsyncLogger name="io.featurehub.mr.events.service" level="trace"/>
+	  <AsyncLogger name="io.featurehub.events" level="trace"/>
+	  <AsyncLogger name="io.featurehub.mr.events" level="trace"/>
     <AsyncLogger name="io.ebean.SQL" level="trace"/>
     <AsyncLogger name="io.ebean.TXN" level="trace"/>
     <AsyncLogger name="io.ebean.SUM" level="trace"/>
