@@ -3,10 +3,11 @@ version: '3.1'
 services:
   # use this setup in Cloud Run or Azure Container Instances. It can be used
   # anywhere but is optimised for those scenarios
-  party-server-ish:
+  party-server:
     image: featurehub/party-server-ish:latest
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - db
     environment:
@@ -31,4 +32,3 @@ services:
 volumes:
   featurehub-ps1-db:
 
-    
