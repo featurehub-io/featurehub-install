@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   nats:
-    image: nats:2.9.1-alpine
+    image: nats:2.10.9-alpine
     restart: always
   mr-server:
     image: featurehub/mr:latest
