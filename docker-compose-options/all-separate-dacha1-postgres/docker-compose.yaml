@@ -4,6 +4,13 @@ services:
   nats:
     image: nats:2.10.9-alpine
     restart: always
+    command:
+      - nats
+      - -js
+      - -sd
+      - /data/jetstream
+    volumes:
+      - jetstream:/data/jetstream
 
   mr-server:
     image: featurehub/mr:latest
@@ -58,3 +65,4 @@ services:
 
 volumes:
   featurehub-ps1-db:
+  jetstream:
