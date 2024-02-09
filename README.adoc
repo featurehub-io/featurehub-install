@@ -16,9 +16,11 @@ NOTE: From version FeatureHub v1.3.4 and later the containers are run in "non-ro
 
 == Documentation
 
-For FeatureHub evaluation deployment please follow instructions https://docs.featurehub.io/featurehub/latest/evaluation.html[here].
+https://docs.featurehub.io/featurehub/latest/installation.html#_evaluation_deployment[FeatureHub Evaluation Deployment].
 
-For FeatureHub production ready deployment please refer to the documentation https://docs.featurehub.io/featurehub/latest/installation.html[here].
+https://docs.featurehub.io/featurehub/latest/installation.html#_production_ready_deployments[Production-ready Deployment Options].
+
+https://docs.featurehub.io/featurehub/latest/installation.html#_deploying_featurehub_non_streaming_on_google_cloud_run[Google Cloud Deployment]
 
 
 == Where to get help?
