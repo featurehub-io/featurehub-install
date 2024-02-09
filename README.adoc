@@ -2,13 +2,11 @@
 
 image::https://docs.featurehub.io/featurehub/latest/_images/fh_primary_navy.png[Feature Hub,500]
 
-NOTE: Helm Charts since version 3.0.4 have forked to a separate repository https://github.com/featurehub-io/featurehub-helm 
+NOTE: Helm Charts for Kubernetes deployment have forked to a separate repository https://github.com/featurehub-io/featurehub-helm 
 
 This repository contains the following FeatureHub installation assets:
 
 - Docker-compose deployment options
-
-Please visit https://github.com/featurehub-io/featurehub-helm/tree/master/helm[Helm Charts] for Kubernetes deployment
 
 All deployment options are pointing to the "latest" tag of the Docker images that we push to the https://hub.docker.com/u/featurehub[DockerHub]
 
@@ -18,11 +16,9 @@ NOTE: From version FeatureHub v1.3.4 and later the containers are run in "non-ro
 
 == Documentation
 
-If you are just curious to see how FeatureHub works and would like to play with it there is a simple way of doing it,
-please follow instructions https://docs.featurehub.io/featurehub/latest/index.html#_evaluating_featurehub[here].
+For FeatureHub evaluation deployment please follow instructions https://docs.featurehub.io/featurehub/latest/evaluation.html[here].
 
-Once you have decided to start using FeatureHub in your team, there are also several installation options
-depending on your use case, please read about these options https://docs.featurehub.io/featurehub/latest/installation.html[here].
+For FeatureHub production ready deployment please refer to the documentation https://docs.featurehub.io/featurehub/latest/installation.html[here].
 
 
 == Where to get help?
