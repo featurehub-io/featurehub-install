@@ -2,7 +2,8 @@ version: '3.1'
 
 services:
   db:
-    image: mariadb:10.5.16-focal
+    image: mariadb:10.11.13-jammy
+    container_name: mariadb
     restart: always
     environment:
       MYSQL_DATABASE: featurehub
