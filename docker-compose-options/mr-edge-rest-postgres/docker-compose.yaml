@@ -65,10 +65,10 @@ services:
       - db.minConnections=3
       - db.maxConnections=30
       - auth.disable-login=false
+      - nats.enabled=false
       - monitor.port=8701
       - server.port=8085
 
 volumes:
   postgresql_master_data:
     driver: local
-    
