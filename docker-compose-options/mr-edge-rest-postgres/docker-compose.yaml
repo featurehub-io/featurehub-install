@@ -38,38 +38,38 @@ services:
       - POSTGRES_PASSWORD=my_password
       - POSTGRES_DB=postgres
       - ALLOW_EMPTY_PASSWORD=yes
-#  postgresql-slave:
-#    <<: *postgres-common
-#    depends_on:
-#      - postgresql-primary
-##    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -P; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
-#    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -R --slot=replication_slot; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
-##    command: |
-##      bash -c "
-##      until pg_basebackup --pgdata=/var/lib/postgresql/data -U replicator -R --slot=replication_slot --host=postgresql-primary --port=5432
-##      do
-##      echo 'Waiting for primary to connect...'
-##      sleep 1s
-##      done
-##      echo 'Backup done, starting replica...'
-##      touch /var/lib/postgresql/data/pgdata/standby.signal
-##      chmod 0700 /var/lib/postgresql/data
-##      postgres
-##      "
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: my_password
-#      PGUSER: replicator
-#      PPPASSWORD: replicator_password
-#      PGREQUIREAUTH: scram-sha-256
-  edge-rest-ish:
+  postgresql-slave:
+    <<: *postgres-common
+    depends_on:
+      - postgresql-primary
+#    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -P; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
+    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -R --slot=replication_slot; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
+#    command: |
+#      bash -c "
+#      until pg_basebackup --pgdata=/var/lib/postgresql/data -U replicator -R --slot=replication_slot --host=postgresql-primary --port=5432
+#      do
+#      echo 'Waiting for primary to connect...'
+#      sleep 1s
+#      done
+#      echo 'Backup done, starting replica...'
+#      touch /var/lib/postgresql/data/pgdata/standby.signal
+#      chmod 0700 /var/lib/postgresql/data
+#      postgres
+#      "
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_password
+      PGUSER: replicator
+      PPPASSWORD: replicator_password
+      PGREQUIREAUTH: scram-sha-256
+  edge:
     # we prefer the slave replica for read requests here
     image: featurehub/edge-rest:latest
     ports:
       - 8553:8553
     depends_on:
       - postgresql-primary
-      - postgresql-slave
+#      - postgresql-slave
     environment:
       - db.url=jdbc:postgresql://postgresql-primary/featurehub
       - db.username=featurehub
@@ -84,7 +84,7 @@ services:
       - auth.disable-login=false
       - monitor.port=8701
       - server.port=8553
-  admin-app:
+  mr-server:
     image: featurehub/mr:latest
     ports:
       - 8085:8085
