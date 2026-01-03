@@ -67,6 +67,7 @@ services:
     image: featurehub/edge-rest:latest
     ports:
       - 8553:8553
+      - 8554:8554
     depends_on:
       - postgresql-primary
 #      - postgresql-slave
@@ -82,12 +83,13 @@ services:
 #      - db-replica.minConnections=3
 #      - db-replica.maxConnections=30
       - auth.disable-login=false
-      - monitor.port=8701
+      - monitor.port=8554
       - server.port=8553
   mr-server:
     image: featurehub/mr:latest
     ports:
       - 8085:8085
+      - 8701:8701
     depends_on:
       - postgresql-primary
     environment:
