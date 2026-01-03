@@ -1,74 +1,108 @@
 version: '3.1'
 
+x-postgres-common: &postgres-common
+  image: postgres:14-alpine
+  user: postgres
+  restart: always
+  healthcheck:
+    test: 'pg_isready -U user --dbname=postgres'
+    interval: 10s
+    timeout: 5s
+    retries: 5
+  ports:
+    - '5432'
+
 services:
-  postgresql-master:
-    image: docker.io/bitnami/postgresql:13
-    ports:
-      - '5432'
+  postgresql-primary:
+    <<: *postgres-common
     volumes:
-      - 'postgresql_master_data:/bitnami/postgresql'
+#      - 'postgresql_master_data:/var/lib/postgresql/data'
       - ./initdb:/docker-entrypoint-initdb.d
+    command: |
+      postgres 
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
     environment:
-      - POSTGRESQL_REPLICATION_MODE=master
-      - POSTGRESQL_REPLICATION_USER=repl_user
-      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
-      - POSTGRESQL_USERNAME=postgres
-      - POSTGRESQL_PASSWORD=my_password
-      - POSTGRESQL_DATABASE=my_database
+#      - POSTGRES_REPLICATION_MODE=master
+#      - POSTGRES_REPLICATION_USER=repl_user
+#      - POSTGRES_REPLICATION_PASSWORD=repl_password
+#      - POSTGRES_HOST_AUTH_METHOD="trust"
+#      - POSTGRES_HOST_AUTH_METHOD="host replication all 0.0.0.0/0 md5"
+#      - POSTGRES_HOST_AUTH_METHOD="scram-sha-256\nhost replication all all md5"
+#      - POSTGRES_HOST_AUTH_METHOD="scram-sha-256"
+#      - POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=my_password
+      - POSTGRES_DB=postgres
       - ALLOW_EMPTY_PASSWORD=yes
   postgresql-slave:
-    image: docker.io/bitnami/postgresql:13
-    ports:
-      - '5432'
+    <<: *postgres-common
     depends_on:
-      - postgresql-master
+      - postgresql-primary
+#    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -P; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
+    command: sh -c "until pg_basebackup -h postgresql-primary -D /var/lib/postgresql/data/pgdata -R --slot=replication_slot; do echo 'Waiting for primary to be ready...'; sleep 2; done && touch /var/lib/postgresql/data/pgdata/standby.signal && postgres"
+#    command: |
+#      bash -c "
+#      until pg_basebackup --pgdata=/var/lib/postgresql/data -U replicator -R --slot=replication_slot --host=postgresql-primary --port=5432
+#      do
+#      echo 'Waiting for primary to connect...'
+#      sleep 1s
+#      done
+#      echo 'Backup done, starting replica...'
+#      touch /var/lib/postgresql/data/pgdata/standby.signal
+#      chmod 0700 /var/lib/postgresql/data
+#      postgres
+#      "
     environment:
-      - POSTGRESQL_REPLICATION_MODE=slave
-      - POSTGRESQL_REPLICATION_USER=repl_user
-      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
-      - POSTGRESQL_MASTER_HOST=postgresql-master
-      - POSTGRESQL_PASSWORD=my_password
-      - POSTGRESQL_MASTER_PORT_NUMBER=5432
-      - ALLOW_EMPTY_PASSWORD=yes
-  edge-rest-ish:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_password
+      PGUSER: replicator
+      PPPASSWORD: replicator_password
+      PGREQUIREAUTH: scram-sha-256
+  edge:
     # we prefer the slave replica for read requests here
     image: featurehub/edge-rest:latest
     ports:
       - 8553:8553
     depends_on:
-      - postgresql-master
-      - postgresql-slave
+      - postgresql-primary
+#      - postgresql-slave
     environment:
-      - db.url=jdbc:postgresql://postgresql-master/featurehub
+      - db.url=jdbc:postgresql://postgresql-primary/featurehub
       - db.username=featurehub
       - db.password=featurehub
       - db.minConnections=3
       - db.maxConnections=30
-      - db-replica.url=jdbc:postgresql://postgresql-slave/featurehub
-      - db-replica.username=featurehub
-      - db-replica.password=featurehub
-      - db-replica.minConnections=3
-      - db-replica.maxConnections=30
+#      - db-replica.url=jdbc:postgresql://postgresql-slave/featurehub
+#      - db-replica.username=featurehub
+#      - db-replica.password=featurehub
+#      - db-replica.minConnections=3
+#      - db-replica.maxConnections=30
       - auth.disable-login=false
       - monitor.port=8701
       - server.port=8553
-  admin-app:
+  mr-server:
     image: featurehub/mr:latest
     ports:
       - 8085:8085
     depends_on:
-      - postgresql-master
+      - postgresql-primary
     environment:
-      - db.url=jdbc:postgresql://postgresql-master/featurehub
+      - db.url=jdbc:postgresql://postgresql-primary/featurehub
       - db.username=featurehub
       - db.password=featurehub
       - db.minConnections=3
       - db.maxConnections=30
       - auth.disable-login=false
+      - nats.enabled=false
       - monitor.port=8701
       - server.port=8085
 
-volumes:
-  postgresql_master_data:
-    driver: local
-    
+#volumes:
+#  postgresql_master_data:
+#    driver: local
+#  postgresql_slave_data:
+#    driver: local
