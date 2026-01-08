@@ -1,0 +1,11 @@
+== MR+Edge/Rest Postgres
+
+
+This demonstrates splitting MR and Edge-Rest, with Edge-Rest direct accessing
+the database. In an environment where you use the SDK based UPDATE API, you cannot
+use a secondary read-only Postgres as direct database writes are required. However,
+if you are disallowing that in your setup and use only one database, the 1.9.2+
+version of FeatureHub will let you make updates.
+
+The example of the primary/secondary postgres in docker compose is incomplete as
+we have not been able to get it working. Please feel free to submit a PR!
