@@ -1,0 +1,105 @@
+version: '3.1'
+
+services:
+  kafka:
+    image: apache/kafka:latest
+    restart: always
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_NODE_ID: "1"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+      KAFKA_NUM_PARTITIONS: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+    ports:
+      - 9092:9092
+
+#  kafbat-ui:
+#    image: ghcr.io/kafbat/kafka-ui:latest
+#    container_name: kafbat-ui
+#    ports:
+#      - "8200:8080"
+#    environment:
+#      # Enable the UI-based configuration wizard (optional but recommended)
+#      DYNAMIC_CONFIG_ENABLED: 'true'
+#      # Define your Kafka cluster connection
+#      KAFKA_CLUSTERS_0_NAME: local-cluster
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+#    depends_on:
+#      - "kafka"
+
+  #  alpine-dev:
+  #    image: alpine:latest
+  #    container_name: alpine-waiting
+  #    command: >
+  #      sh -c "apk add --no-cache bash netcat-openbsd && tail -f /dev/null"
+
+  mr-server:
+    image: featurehub/mr:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./mr-config/application.env
+    environment:
+      monitor.port: "8701"
+    ports:
+      - 8085:8085
+      - 8701:8701
+    depends_on:
+      - "db"
+      - "kafka"
+  dacha:
+    image: featurehub/dacha2:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./dacha-config/application.env
+    environment:
+      monitor.port: "8279"
+    depends_on:
+      - "mr-server"
+      - "kafka"
+    ports:
+      - 8902:8902
+      - 8279:8279
+
+  edge:
+    image: featurehub/edge:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./edge-config/application.env
+    environment:
+      monitor.port: "8554"
+    ports:
+      - 8553:8553
+      - 8554:8554
+    depends_on:
+      - "kafka"
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - featurehub-ps1-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  featurehub-ps1-db:
