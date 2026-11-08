@@ -1,0 +1,94 @@
+version: '3.1'
+
+services:
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:398.0.0-emulators
+    restart: always
+    command:
+      - gcloud
+      - beta
+      - emulators
+      - pubsub
+      - start
+      - --project=featureuhb
+      - --host-port=0.0.0:8075
+
+  # the dacha2 fallback cache: MR writes whole environments and service accounts to it, dacha2 reads them
+  # while MR is unavailable (e.g. down for database maintenance)
+  redis:
+    image: redis:7.2-alpine
+    restart: always
+    # a single string, not a list: fh-github-watcher re-writes this file as YAML 1.2, which leaves `no` unquoted, and
+    # docker-compose (YAML 1.1) then reads it as the boolean false.
+    # --maxmemory-policy noeviction is required (an eviction policy would silently drop environments); no persistence
+    # (--save '' --appendonly no) as MR rebuilds the contents with a full sync
+    command: "redis-server --requirepass featurehub-e2e --maxmemory-policy noeviction --save '' --appendonly no"
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "featurehub-e2e", "--no-auth-warning", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mr-server:
+    image: featurehub/mr:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./mr-config/application.env
+    ports:
+      - 8085:8085
+      - 8701:8701
+    depends_on:
+      - "db"
+      - "pubsub"
+      - "redis"
+  dacha:
+    image: featurehub/dacha2:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+      # re-read while dacha2 runs (dacha2.redis.config-file), so the fallback can be switched on/off live
+      - ./redis-config:/etc/redis-config
+    env_file:
+      - ./common.env
+      - ./dacha-config/application.env
+    depends_on:
+      - "mr-server"
+      - "pubsub"
+      - "redis"
+    ports:
+      - 8902:8902
+      - 8279:8279
+
+  edge:
+    image: featurehub/edge:latest
+    restart: always
+    user: 999:999
+    volumes:
+      - ./common-config:/etc/common-config
+    env_file:
+      - ./common.env
+      - ./edge-config/application.env
+    ports:
+      - 8553:8553
+      - 8554:8554
+    depends_on:
+      - "pubsub"
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - featurehub-ps1-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  featurehub-ps1-db:
