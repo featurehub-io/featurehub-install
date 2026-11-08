@@ -18,18 +18,11 @@ services:
   redis:
     image: redis:7.2-alpine
     restart: always
-    command:
-      - redis-server
-      - --requirepass
-      - featurehub-e2e
-      # required: an eviction policy would silently drop environments
-      - --maxmemory-policy
-      - noeviction
-      # MR rebuilds the contents with a full sync, so no persistence
-      - --save
-      - ""
-      - --appendonly
-      - "no"
+    # a single string, not a list: fh-github-watcher re-writes this file as YAML 1.2, which leaves `no` unquoted, and
+    # docker-compose (YAML 1.1) then reads it as the boolean false.
+    # --maxmemory-policy noeviction is required (an eviction policy would silently drop environments); no persistence
+    # (--save '' --appendonly no) as MR rebuilds the contents with a full sync
+    command: "redis-server --requirepass featurehub-e2e --maxmemory-policy noeviction --save '' --appendonly no"
     ports:
       - 6379:6379
     healthcheck:
