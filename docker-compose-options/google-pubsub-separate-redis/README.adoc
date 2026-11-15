@@ -1,0 +1,35 @@
+= Google PubSub, separate services, with the Redis fallback for Dacha2
+
+This is the `google-pubsub-separate` deployment (Edge, Management Repository and Dacha2 running separately against
+the Google PubSub emulator, with Postgres) plus a Redis instance used as Dacha2's fallback cache.
+
+When the Management Repository (MR) is unavailable, for example while it is shut down for database maintenance,
+Dacha2 cannot normally load anything it has not already cached. With Redis configured:
+
+* MR writes every environment and service account to Redis, as well as publishing changes in the normal way
+(`redis.*` in `mr-config/application.env`).
+* Dacha2 asks MR first. If MR cannot be reached or returns a 5xx, it serves cache misses from Redis and tries MR again
+every couple of seconds. Its Redis settings are in `redis-config/redis.properties`, which it re-reads every 5 seconds,
+so commenting out `dacha2.redis.url` switches the fallback off without restarting Dacha2.
+
+Try it:
+
+----
+docker compose up -d
+# create some features and a service account, then:
+docker compose stop mr-server
+docker compose restart dacha edge     # empty their caches
+curl "http://localhost:8553/features?apiKey=<server eval api key>"   # still served, from Redis
+----
+
+Redis is configured like a managed Redis service: AUTH (`featurehub-e2e`), `maxmemory-policy noeviction` (required,
+an eviction policy would silently drop environments) and no persistence (MR rebuilds the contents).
+
+This option is used by the FeatureHub end to end tests to check the fallback with Redis on and off.
+
+Stack:
+
+- Edge, Dacha2, Management Repository Instances
+- Redis
+- Google PubSub
+- Postgres database
